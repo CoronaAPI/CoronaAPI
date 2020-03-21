@@ -5,9 +5,7 @@
 ###################
 
 TIME=$(date +%b-%d-%y)
-DATE=$(date +%d%m%Y_%H%M)
-# CURDATE1=$(date '+%d-%m-%Y %H:%M')
-# DIFFTIME1=$(date '+%s%N')
+DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
 
 ##################
@@ -16,7 +14,7 @@ DIR="/opt/corona-api/data"
 
 echo "[*] Starting Daily Data Dump " + $TIME
 
-mkdir $DIR/$DATE
+mkdir -p $DIR/$DATE
 
 cd $DIR/$DATE
 git clone --recursive https://github.com/lazd/coronadatascraper
@@ -33,7 +31,7 @@ yarn install
 echo "[*] Starting coronadatascraper..."
 yarn start
 
-cp dist/data.json .
+cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
 echo "[*] Data successfully dumped " + $TIME
 
 ##################
@@ -43,6 +41,7 @@ echo "[*] Data successfully dumped " + $TIME
 echo ""
 echo "[*] Cleaning up data scrape"
 
+shopt -s extglob
 rm -r !("data.json")
 
 echo "[*] Daily Script Complete!"
