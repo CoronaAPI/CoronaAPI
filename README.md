@@ -18,8 +18,8 @@ The API will then be listening on `localhost:3001`
 
 ## Contributors
 
-![brauls](https://avatars2.githubusercontent.com/u/6483465?s=460&u=55044b868d1017a8c1267458a36ff381c09936aa&v=4)
-![ndom91](https://avatars2.githubusercontent.com/u/7415984?s=460&u=b9c808dce6179d92b5dd8d2d945afbf9003245f7&v=4)
+![brauls](https://avatars.githubusercontent.com/u/6483465?v=2&s=128)
+![ndom91](https://avatars.githubusercontent.com/u/7415984?v=2&s=128)
 
 ## License
 
