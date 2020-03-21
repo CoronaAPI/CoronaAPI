@@ -1,11 +1,10 @@
 {
-  "name": "CoronaAPI",
-  "version": "1.0.0",
+  "name": "corona-api",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV='dev' node server.js"
+    "dev": "NODE_ENV='dev' nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -13,7 +12,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/CoronaAPI/CoronaAPI/issues"
   },
@@ -23,6 +22,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "nodemon": "^2.0.2",
     "standard": "^14.3.3"
   }
 }

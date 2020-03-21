@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const fs = require("fs");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -27,6 +26,8 @@ const corsOptions = {
   }
 };
 
+
+
 app.get("/", (req, res) => {
   res.json({ message: "Corona REST API" });
 });
@@ -36,5 +37,5 @@ app.get("/test", cors(corsOptions), (req, res) => {
 });
 
 app.listen(process.env.port || 3001, () => {
-  console.log("Server is listening on port 3001");
+  console.log("Server is listening on localhost:3001");
 });
