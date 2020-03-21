@@ -32,11 +32,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/test", cors(corsOptions), (req, res) => {
-  console.log("Hello json");
-  fs.readFile("./package.json", function (err, data) {
-    if (err) return res.status(500).json({ error: err });
-    res.status(200).json({ result: data });
-  });
+  res.status(200).sendFile(__dirname + '/package.json')
 });
 
 app.listen(process.env.port || 3001, () => {
