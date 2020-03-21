@@ -7,15 +7,16 @@ const dir = requireDir('./data/', { recurse: true })
 const whitelist = ["*"];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (process.env.NODE_ENV === "dev") {
-      callback(null, true);
-    } else {
-      if (whitelist.indexOf(origin) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }
+    callback(null, true);
+    // if (process.env.NODE_ENV === "dev") {
+    //   callback(null, true);
+    // } else {
+    //   if (whitelist.indexOf(origin) !== -1 || !origin) {
+    //     callback(null, true);
+    //   } else {
+    //     callback(new Error("Not allowed by CORS"));
+    //   }
+    // }
   }
 };
 
@@ -128,10 +129,10 @@ module.exports.setup = function (app) {
     const scrapedData = readJsonFileSync(__dirname + '/data/2020-03-21/data.json')
     const countryParam = req.query.country
     if (!countryParam) {
-      res.status(200).json(scrapedData);
+      res.status(200).json(scrapedData.map(mapDataModel));
     } else {
       const filteredData = scrapedData.map(mapDataModel)
-        .filter(countryFilter(countryParam))
+        .filter(countryFilter(countryParam.toUpperCase()))
       res.status(200).json(filteredData);
     }
   });
