@@ -109,7 +109,7 @@ module.exports.setup = function (app) {
    */
 
   app.get("/api/daily", (req, res) => {
-    const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
+    const scrapedData = readJsonFileSync(__dirname + '/data/2020-03-21/data.json')
     const countryParam = req.query.country
     if (!countryParam) {
       res.status(200).json(scrapedData);
