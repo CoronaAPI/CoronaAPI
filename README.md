@@ -1,12 +1,12 @@
-# Corona API
+# 🦠 Corona API
 
-> #WirVsVirus Project #0193
+## #WirVsVirus Project 0193
 
-HTTP Corona API based on the great work of [lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
+HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
 
-[DevPost Project](https://devpost.com/software/1_038_a_daten_0193_coronaapi)
+### 🖥️ [DevPost Project](https://devpost.com/software/1_038_a_daten_0193_coronaapi)
 
-## Usage
+## 🏗️ Usage
 
 1. `git clone https://github.com/CoronaAPI/CoronaAPI`
 
@@ -18,11 +18,11 @@ HTTP Corona API based on the great work of [lazd/coronadatascraper](https://gith
 
 The API will then be listening on `localhost:3001`
 
-## Contributors
+## 🙏 Contributors
 
 ![brauls](https://avatars.githubusercontent.com/u/6483465?v=2&s=128)
 ![ndom91](https://avatars.githubusercontent.com/u/7415984?v=2&s=128)
 
-## License
+## 📝 License
 
 MIT
