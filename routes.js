@@ -1,35 +1,6 @@
-// const fs = require("fs");
-
-// function readJsonFileSync(filepath, encoding) {
-//   if (typeof (encoding) == 'undefined'){
-//       encoding = 'utf8';
-//   }
-//   var file = fs.readFileSync(filepath, encoding);
-//   return JSON.parse(file);
-// }
-
-// function mapDataModel(coronaData) {
-//   return {
-//     country: coronaData.country,
-//     state: coronaData.state,
-//     county: coronaData.county,
-//     recovered: coronaData.recovered,
-//     deaths: coronaData.deaths,
-//     active: coronaData.active,
-//     url: coronaData.url,
-//     rating: coronaData.rating
-//   }
-// }
-
-// function countryFilter(allowedCountry) {
-//   if (undefined == allowedCountry) {
-//     return _ => true;
-//   }
-
-//   return coronaData => coronaData.country == allowedCountry
-// }
-
 const { readJsonFileSync, mapDataModel, countryFilter } = require('./utils/functions')
+const requireDir = require('require-dir')
+const dir = requireDir('./data/', { recurse: true })
 
 module.exports.setup = function (app) {
   /**
@@ -80,16 +51,16 @@ module.exports.setup = function (app) {
    *         description: A rating of the data that takes into account completeness, machine readability and best practices.
    *
    * @swagger
-   * /:
+   * /api/daily:
    *   get:
-   *     description: Get the scraped Corona data (example)
+   *     description: Get high-level daily data for a given country.
    *     parameters:
    *       - in: query
    *         name: country
    *         schema:
    *           type string
-   *         required: false
-   *         description: Can be used to get data only for one specific country.
+   *         required: true
+   *         description: Please enter the 3-digit ISO Country Code. 
    *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany).
    *     responses:
    *       200:
@@ -101,7 +72,8 @@ module.exports.setup = function (app) {
    *             type: object
    *             $ref: '#/definitions/CoronaData'
    */
-  app.get("/", (req, res) => {
+
+  app.get("/api/daily", (req, res) => {
 
     const countryParam = req.query.country
 
@@ -112,4 +84,19 @@ module.exports.setup = function (app) {
 
     res.json(filteredData);
   });
+
+  app.get("/api/timeseries", (req, res) => {
+    const country = req.query.country
+
+    // timeSpan: ['week', 'month', 'year'] -- what do you think?
+    const timeSpan = req.query.time
+    if (country.length() === 2) {
+      matchCountryCode()
+    }
+    if (country.length() === 3) {
+      res.status(200).json({ result: dir })
+    }
+    res.status(500).json({ result: {}, error: 'please provide a country name' })
+  });
+
 };
