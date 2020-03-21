@@ -120,7 +120,7 @@ module.exports.setup = function (app) {
     }
   });
 
-  app.get("/api/timeseries", (req, res) => {
+  app.get("/api/timespan", (req, res) => {
     const country = req.query.country
     const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     // timeSpan: ['week', 'month', 'year'] -- what do you think?
