@@ -93,7 +93,7 @@ module.exports.setup = function (app) {
    *             - 'year'
    *           default: 'week'
    *         required: true
-   *         description: Please choose a timespan, how far back you want data
+   *         description: Please choose a timespan, how far back you want data. Must be one of "week", "month", "year".
    *         examples:
    *           oneId:
    *             summary: Example of a single ID
@@ -122,7 +122,7 @@ module.exports.setup = function (app) {
 
   app.get("/api/timeseries", (req, res) => {
     const country = req.query.country
-    const dayMap = { 'week': 2, 'month': 30, 'year': 365 }
+    const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     // timeSpan: ['week', 'month', 'year'] -- what do you think?
     const timeSpan = req.query.time
     const dateToday = dayjs().format('YYYY-MM-DD')
