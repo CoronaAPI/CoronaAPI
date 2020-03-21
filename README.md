@@ -1,6 +1,6 @@
-# 🦠 Corona API
+# 🦠 Corona API 
 
-## #WirVsVirus Project 0193
+### #WirVsVirus Project 0193
 
 HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
 
