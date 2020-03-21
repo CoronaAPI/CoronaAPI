@@ -109,11 +109,11 @@ module.exports.setup = function (app) {
    */
 
   app.get("/api/daily", (req, res) => {
+    const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
     const countryParam = req.query.country
     if (!countryParam) {
       res.status(200).json(scrapedData);
     } else {
-      const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
       const filteredData = scrapedData.map(mapDataModel)
         .filter(countryFilter(countryParam))
       res.status(200).json(filteredData);
