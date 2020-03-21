@@ -28,14 +28,14 @@ const corsOptions = {
 };
 
 app.get("/", (req, res) => {
-  res.json({ message: "Newtelco CRM REST API" });
+  res.json({ message: "Corona REST API" });
 });
 
 app.get("/test", cors(corsOptions), (req, res) => {
   console.log("Hello json");
   fs.readFile("./package.json", function (err, data) {
-    if (err) return next(err);
-    res.status(200).json(data);
+    if (err) return res.status(500).json({ error: err });
+    res.status(200).json({ result: data });
   });
 });
 
