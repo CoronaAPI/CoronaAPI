@@ -36,6 +36,10 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
+app.get('/', (req, res) => {
+  res.redirect('https://corona.ndo.dev/api-docs/swagger-ui');
+})
+
 app.get('/api-docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
