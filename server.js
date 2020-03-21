@@ -17,7 +17,7 @@ app.use(cors());
 
 let host
 if (process.env.NODE_ENV === 'dev') {
-  host = `localhost:${POST}`
+  host = `localhost:${PORT}`
 } else {
   host = `corona.ndo.dev`
 }
