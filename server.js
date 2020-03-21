@@ -5,6 +5,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const requireDir = require('require-dir')
+const dir = requireDir('./data/', { recurse: true })
+// import * as countries from "./utils/names.json";
+// import * as iso3 from "./utils/iso3.json";
+
 
 const routes_v1 = require('./routes')
 
@@ -62,9 +67,41 @@ const corsOptions = {
   }
 };
 
+const matchCountryCode = update => {
+  const countryCode = Object.entries(countries).find(
+    country => country[0] === update.countryRegion
+  );
+  if (countryCode) {
+    update.iso2 = countryCode[1];
+  }
+  return update;
+};
+
+const getIso3Code = update => {
+  const countryCode3 = Object.entries(iso3).find(
+    country => country[0] === update.iso2
+  );
+  if (countryCode3) {
+    update.iso3 = countryCode3[1];
+  }
+  return update;
+};
+
 app.get("/test", cors(corsOptions), (req, res) => {
   res.status(200).sendFile(__dirname + '/package.json')
 });
+
+app.get("/api/daily", cors(corsOptions), (req, res) => {
+  const country = req.query.c
+  if (country.length() === 2) {
+    matchCountryCode()
+  }
+  if (country.length() === 3) {
+    res.status(200).json({ result: dir })
+  }
+  res.status(500).json({ result: {}, error: 'please provide a country name' })
+});
+
 
 routes_v1.setup(app)
 

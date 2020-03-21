@@ -1,35 +1,37 @@
-const fs = require("fs");
+// const fs = require("fs");
 
-function readJsonFileSync(filepath, encoding) {
-  if (typeof (encoding) == 'undefined'){
-      encoding = 'utf8';
-  }
-  var file = fs.readFileSync(filepath, encoding);
-  return JSON.parse(file);
-}
+// function readJsonFileSync(filepath, encoding) {
+//   if (typeof (encoding) == 'undefined'){
+//       encoding = 'utf8';
+//   }
+//   var file = fs.readFileSync(filepath, encoding);
+//   return JSON.parse(file);
+// }
 
-function mapDataModel(coronaData) {
-  return {
-    country: coronaData.country,
-    state: coronaData.state,
-    county: coronaData.county,
-    recovered: coronaData.recovered,
-    deaths: coronaData.deaths,
-    active: coronaData.active,
-    url: coronaData.url,
-    rating: coronaData.rating
-  }
-}
+// function mapDataModel(coronaData) {
+//   return {
+//     country: coronaData.country,
+//     state: coronaData.state,
+//     county: coronaData.county,
+//     recovered: coronaData.recovered,
+//     deaths: coronaData.deaths,
+//     active: coronaData.active,
+//     url: coronaData.url,
+//     rating: coronaData.rating
+//   }
+// }
 
-function countryFilter(allowedCountry) {
-  if (undefined == allowedCountry) {
-    return _ => true;
-  }
+// function countryFilter(allowedCountry) {
+//   if (undefined == allowedCountry) {
+//     return _ => true;
+//   }
 
-  return coronaData => coronaData.country == allowedCountry
-}
+//   return coronaData => coronaData.country == allowedCountry
+// }
 
-module.exports.setup = function(app) {
+const { readJsonFileSync, mapDataModel, countryFilter } = require('./utils/functions')
+
+module.exports.setup = function (app) {
   /**
    *
    * @swagger
@@ -103,7 +105,7 @@ module.exports.setup = function(app) {
 
     const countryParam = req.query.country
 
-    const scrapedData = readJsonFileSync(__dirname + '/data.json')
+    const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
 
     const filteredData = scrapedData.map(mapDataModel)
       .filter(countryFilter(countryParam))
