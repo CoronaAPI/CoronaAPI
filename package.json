@@ -24,5 +24,8 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.2",
     "standard": "^14.3.3"
+  },
+  "devDependencies": {
+    "@architect/sandbox": "^1.8.0"
   }
 }
