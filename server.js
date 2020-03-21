@@ -15,13 +15,20 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 
+let host
+if (process.env.NODE_ENV === 'dev') {
+  host = `localhost:${POST}`
+} else {
+  host = `corona.ndo.dev`
+}
+
 const swaggerDefinition = {
   info: {
     title: 'Corona Virus API',
     version: '1.0.0',
     description: 'An API serving structured information on Corona Virus',
   },
-  host: `localhost:${PORT}`,
+  host: host,
   basePath: '/',
 };
 
