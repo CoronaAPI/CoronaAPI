@@ -4,6 +4,8 @@ const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
 const routes_v1 = require('./routes')
 
 const PORT = process.env.port || 3001
@@ -30,10 +32,11 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
-app.get('/api-docs.json', (req, res) => {
+app.get('/api-docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 });
+app.use('/api-docs/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Beispiel whitelist
 // const whitelist = ['https://domain.de']
