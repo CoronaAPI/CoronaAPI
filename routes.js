@@ -59,7 +59,7 @@ module.exports.setup = function (app) {
    *         name: country
    *         schema:
    *           type string
-   *         required: true
+   *         required: false
    *         description: Please enter the 3-digit ISO Country Code. 
    *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany).
    *     responses:
@@ -74,15 +74,15 @@ module.exports.setup = function (app) {
    */
 
   app.get("/api/daily", (req, res) => {
-
     const countryParam = req.query.country
-
-    const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
-
-    const filteredData = scrapedData.map(mapDataModel)
-      .filter(countryFilter(countryParam))
-
-    res.json(filteredData);
+    if (!countryParam) {
+      res.status(200).json(scrapedData);
+    } else {
+      const scrapedData = readJsonFileSync(__dirname + '/data/20032020/data.json')
+      const filteredData = scrapedData.map(mapDataModel)
+        .filter(countryFilter(countryParam))
+      res.status(200).json(filteredData);
+    }
   });
 
   app.get("/api/timeseries", (req, res) => {
