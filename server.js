@@ -26,8 +26,6 @@ const corsOptions = {
   }
 };
 
-
-
 app.get("/", (req, res) => {
   res.json({ message: "Corona REST API" });
 });
