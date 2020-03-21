@@ -26,24 +26,32 @@ module.exports.setup = function(app) {
    *       country:
    *         type: string
    *         example: DEU
+   *         description: If specified, filters the result array to only contain one entry representing the Corona Data for that specific country.
+   *           The country codes must be specified according to <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a>.
    *       cases:
    *         type: integer
    *         example: 19848
+   *         description: The total number of cases taken into account the specified date filters 'since' and 'until'.
    *       recovered:
    *         type: integer
    *         example: 180
+   *         description: The number of recovered people taken into account the specified date filters 'since' and 'until'.
    *       deaths:
    *         type: integer
    *         example: 68
+   *         description: The number of people that died due to Corona Virus taken into account the specified date filters 'since' and 'until'.
    *       active:
    *         type: integer
    *         example: 19600
+   *         description: The number of people that are currently infected with Corona Virus taken into account the specified date filters 'since' and 'until'.
    *       source:
    *         type: string
    *         example: https://covid19-germany.appspot.com/now
+   *         description: The source from which the data has been taken.
    *       rating:
    *         type: number
    *         example: 0.17073170731707318
+   *         description: A rating of the data that takes into account completeness, machine readability and best practices.
    *
    * @swagger
    * /:
