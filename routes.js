@@ -1,7 +1,23 @@
 const { readJsonFileSync, mapDataModel, countryFilter } = require('./utils/functions')
 var dayjs = require('dayjs')
+const cors = require("cors");
 const requireDir = require('require-dir')
 const dir = requireDir('./data/', { recurse: true })
+
+const whitelist = ["*"];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (process.env.NODE_ENV === "dev") {
+      callback(null, true);
+    } else {
+      if (whitelist.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }
+  }
+};
 
 module.exports.setup = function (app) {
   /**
@@ -108,7 +124,7 @@ module.exports.setup = function (app) {
    *             $ref: '#/definitions/CoronaData'
    */
 
-  app.get("/api/daily", (req, res) => {
+  app.get("/api/daily", cors(corsOptions), (req, res) => {
     const scrapedData = readJsonFileSync(__dirname + '/data/2020-03-21/data.json')
     const countryParam = req.query.country
     if (!countryParam) {
@@ -120,7 +136,7 @@ module.exports.setup = function (app) {
     }
   });
 
-  app.get("/api/timespan", (req, res) => {
+  app.get("/api/timespan", cors(corsOptions), (req, res) => {
     const country = req.query.country
     const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     // timeSpan: ['week', 'month', 'year'] -- what do you think?
