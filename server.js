@@ -37,7 +37,7 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 app.get('/', (req, res) => {
-  res.redirect('https://corona.ndo.dev/api-docs/swagger-ui');
+  res.redirect('https://corona-api-landingpage.netlify.com/');
 })
 
 app.get('/api-docs/swagger.json', (req, res) => {
