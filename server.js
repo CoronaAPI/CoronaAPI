@@ -21,9 +21,9 @@ if (process.env.NODE_ENV === 'dev') {
 
 const swaggerDefinition = {
   info: {
-    title: 'Corona Virus API',
-    version: '1.0.0',
-    description: 'An API serving structured information on Corona Virus',
+    title: 'COVID-19 API',
+    version: '0.0.3',
+    description: 'An HTTP API serving structured information on COVID-19\'s march around the globe.',
   },
   host: host,
   basePath: '/',
