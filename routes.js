@@ -214,7 +214,7 @@ module.exports.setup = function (app) {
     dateFolders.forEach(date => {
       const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
         .map(mapDataModel)
-        .filter(countryFilter(country))
+        .filter(!country ? countryFilter(country) : countryFilter())
 
       returnData.push(countryDay)
     })
