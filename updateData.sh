@@ -17,6 +17,7 @@ echo "[*] Starting Daily Data Dump " + $TIME
 mkdir -p $DIR/$DATE
 
 cd $DIR/$DATE
+
 git clone --recursive https://github.com/lazd/coronadatascraper
 
 echo "[*] Repo successfully cloned"
@@ -41,6 +42,7 @@ echo "[*] Data successfully dumped " + $TIME
 echo ""
 echo "[*] Cleaning up data scrape"
 
+cd $DIR/$DATE
 shopt -s extglob
 rm -r !("data.json")
 
