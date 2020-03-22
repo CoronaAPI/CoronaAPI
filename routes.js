@@ -71,6 +71,8 @@ module.exports.setup = function (app) {
    * @swagger
    * /api/daily:
    *   get:
+   *     tags:
+   *       - CoronaAPI
    *     description: Get high-level daily data for a given country.
    *     parameters:
    *       - in: query
@@ -91,6 +93,8 @@ module.exports.setup = function (app) {
    *             $ref: '#/definitions/CoronaData'
    * /api/timespan:
    *   get:
+   *     tags:
+   *       - CoronaAPI
    *     description: Get high-level daily data for a given country over time.
    *     parameters:
    *       - in: query

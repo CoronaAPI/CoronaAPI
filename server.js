@@ -26,14 +26,31 @@ const swaggerDefinition = {
     title: 'COVID-19 API',
     version: '0.0.3',
     description: 'An HTTP API serving structured information on COVID-19\'s march around the globe.',
+    license: {
+      name: "MIT",
+      url: "https://opensource.org/licenses/MIT"
+    }
   },
   host: host,
   basePath: '/',
+  tags: [
+    {
+      "name": "CoronaAPI",
+      "description": "HTTP API for getting the latest COVID-19 Data."
+    }
+  ],
+  schemes: [
+    "http"
+  ],
+  produces: [
+    "application/json"
+  ],
 };
 
 const options = {
   swaggerDefinition,
   apis: ['./routes*.js'],
+  explorer: true
 };
 
 const swaggerSpec = swaggerJSDoc(options);
