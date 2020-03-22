@@ -1,4 +1,4 @@
-const { readJsonFileSync, mapDataModel, mapRating, countryFilter } = require('./utils/functions')
+const { readJsonFileSync, mapDataModel, filterRating, countryFilter } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const requireDir = require('require-dir')
@@ -82,6 +82,12 @@ module.exports.setup = function (app) {
    *         required: false
    *         description: Please enter the 3-digit ISO Country Code. 
    *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany). 
+   *       - in: query
+   *         name: rating
+   *         schema:
+   *           type number
+   *         required: false
+   *         description: Please enter a minimum rating of the data quality based upon (<a href="https://github.com/lazd/coronadatascraper">@lazd/coronadatascraper</a> data rating)
    *     responses:
    *       200:
    *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.
@@ -100,7 +106,7 @@ module.exports.setup = function (app) {
    *         name: country
    *         schema:
    *           type string
-   *         required: true
+   *         required: false
    *         description: Please enter the 3-digit ISO Country Code. 
    *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany).
    *       - in: query
@@ -118,26 +124,6 @@ module.exports.setup = function (app) {
    *           oneId:
    *             summary: Example of a single ID
    *             value: ['week', 'month']
-   *     responses:
-   *       200:
-   *         description: The available COVID-19 data per country as a JSON array. The array of days for the time span requested for the country requested.
-   *         schema:
-   *           type: array
-   *           items:
-   *             type: object
-   *             $ref: '#/definitions/CoronaData'
-   * /api/daily/rating:
-   *   get:
-   *     tags:
-   *       - CoronaAPI
-   *     description: Get high-level daily data of a given quality (based on @lazd/coronadatascraper rating)
-   *     parameters:
-   *       - in: query
-   *         name: rating
-   *         schema:
-   *           type: number
-   *         required: true
-   *         description: 0.0 -> 0.99
    *     responses:
    *       200:
    *         description: The available COVID-19 data per country as a JSON array. The array of days for the time span requested for the country requested.
@@ -168,27 +154,14 @@ module.exports.setup = function (app) {
 
   app.get("/api/daily", cors(corsOptions), (req, res) => {
     const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
-    const countryParam = req.query.country
-    if (!countryParam) {
-      res.status(200).json(scrapedData.map(mapDataModel));
-    } else {
-      const filteredData = scrapedData.map(mapDataModel)
-        .filter(countryFilter(countryParam.toUpperCase()))
-      res.status(200).json(filteredData);
-    }
-  });
 
-  app.get("/api/daily/rating", cors(corsOptions), (req, res) => {
+    const countryParam = req.query.country
     const minRating = req.query.rating
-    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
-    if (!minRating) {
-      res.status(500).json({ error: 'Please enter a rating' });
-    } else {
-      const filteredData = scrapedData
-        .map(mapDataModel)
-        .filter(mapRating(minRating))
-      res.status(200).json(filteredData);
-    }
+
+    const filteredData = scrapedData.map(mapDataModel)
+      .filter(filterRating(minRating))
+      .filter(countryParam ? countryFilter(countryParam.toUpperCase()) : countryFilter())
+    res.status(200).json(filteredData);
   });
 
   app.get("/api/timespan", cors(corsOptions), (req, res) => {

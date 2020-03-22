@@ -39,9 +39,6 @@ const swaggerDefinition = {
       "description": "HTTP API for getting the latest COVID-19 Data."
     }
   ],
-  schemes: [
-    "https"
-  ],
   produces: [
     "application/json"
   ],
