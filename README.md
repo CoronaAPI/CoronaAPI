@@ -1,3 +1,5 @@
+<img src="https://imgur.com/BYL9tJl.png" width="300px" align="right" alt="wirvsvirus logo" />
+
 # 🦠 Corona API 
 
 ### #WirVsVirus Project 0193
