@@ -21,25 +21,6 @@ if (process.env.NODE_ENV === 'dev') {
   host = `corona.ndo.dev`
 }
 
-const DisableAuthorizePlugin = function () {
-  return {
-    wrapComponents: {
-      authorizeBtn: () => () => null
-    }
-  };
-};
-const DisableTryItOutPlugin = function () {
-  return {
-    statePlugins: {
-      spec: {
-        wrapSelectors: {
-          allowTryItOutFor: () => () => false
-        }
-      }
-    }
-  }
-}
-
 const swaggerDefinition = {
   info: {
     title: 'COVID-19 API',
@@ -69,11 +50,7 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   apis: ['./routes*.js'],
-  explorer: true,
-  plugins: [
-    DisableAuthorizePlugin,
-    DisableTryItOutPlugin
-  ]
+  explorer: true
 };
 
 const swaggerSpec = swaggerJSDoc(options);

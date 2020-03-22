@@ -73,7 +73,7 @@ module.exports.setup = function (app) {
    *   get:
    *     tags:
    *       - CoronaAPI
-   *     description: Get high-level daily data for a given country.
+   *     description: Get high-level daily data - Country parameter optional.
    *     parameters:
    *       - in: query
    *         name: country
@@ -81,11 +81,10 @@ module.exports.setup = function (app) {
    *           type string
    *         required: false
    *         description: Please enter the 3-digit ISO Country Code. 
-   *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany).
+   *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany). 
    *     responses:
    *       200:
-   *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country
-   *           is filtered according to the request parameters.
+   *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.
    *         schema:
    *           type: array
    *           items:
@@ -128,9 +127,14 @@ module.exports.setup = function (app) {
    *             type: object
    *             $ref: '#/definitions/CoronaData'
    */
+  const dateToday = dayjs().format('YYYY-MM-DD')
+
+  app.get("/meta", cors(corsOptions), (req, res) => {
+    res.status(200).json({ lastUpdate: dateToday, repo: 'https://github.com/CoronaAPI/Corona' });
+  })
 
   app.get("/api/daily", cors(corsOptions), (req, res) => {
-    const scrapedData = readJsonFileSync(__dirname + '/data/2020-03-21/data.json')
+    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
     const countryParam = req.query.country
     if (!countryParam) {
       res.status(200).json(scrapedData.map(mapDataModel));
@@ -141,12 +145,22 @@ module.exports.setup = function (app) {
     }
   });
 
+  // app.get("/api/rating", cors(corsOptions), (req, res) => {
+  //   const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+  //   const countryParam = req.query.country
+  //   if (!countryParam) {
+  //     res.status(200).json(scrapedData.map(mapDataModel));
+  //   } else {
+  //     const filteredData = scrapedData.map(mapDataModel)
+  //       .filter(countryFilter(countryParam.toUpperCase()))
+  //     res.status(200).json(filteredData);
+  //   }
+  // });
+
   app.get("/api/timespan", cors(corsOptions), (req, res) => {
     const country = req.query.country
     const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
-    // timeSpan: ['week', 'month', 'year'] -- what do you think?
     const timeSpan = req.query.time
-    const dateToday = dayjs().format('YYYY-MM-DD')
     const dateFolders = Array.from(Array(dayMap[timeSpan])).map((_, i) => {
       return dayjs(dateToday).subtract(i, 'day').format('YYYY-MM-DD')
     });
