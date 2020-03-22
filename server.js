@@ -21,6 +21,25 @@ if (process.env.NODE_ENV === 'dev') {
   host = `corona.ndo.dev`
 }
 
+const DisableAuthorizePlugin = function () {
+  return {
+    wrapComponents: {
+      authorizeBtn: () => () => null
+    }
+  };
+};
+const DisableTryItOutPlugin = function () {
+  return {
+    statePlugins: {
+      spec: {
+        wrapSelectors: {
+          allowTryItOutFor: () => () => false
+        }
+      }
+    }
+  }
+}
+
 const swaggerDefinition = {
   info: {
     title: 'COVID-19 API',
@@ -40,7 +59,7 @@ const swaggerDefinition = {
     }
   ],
   schemes: [
-    "http"
+    "https"
   ],
   produces: [
     "application/json"
@@ -50,7 +69,11 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   apis: ['./routes*.js'],
-  explorer: true
+  explorer: true,
+  plugins: [
+    DisableAuthorizePlugin,
+    DisableTryItOutPlugin
+  ]
 };
 
 const swaggerSpec = swaggerJSDoc(options);
@@ -68,5 +91,5 @@ app.use('/api-docs/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 routes_v1.setup(app)
 
 app.listen(PORT, () => {
-  console.log("Server is listening on localhost:3001");
+  console.log(`Server is listening on localhost:${PORT}`);
 });

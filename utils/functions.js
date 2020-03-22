@@ -20,7 +20,8 @@ const mapDataModel = (coronaData) => {
     url: coronaData.url,
     rating: coronaData.rating,
     population: coronaData.population,
-    aggregate: coronaData.aggregate
+    aggregate: coronaData.aggregate,
+    coordinates: coronaData.coordinates
   }
 }
 
