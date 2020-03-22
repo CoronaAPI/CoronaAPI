@@ -49,16 +49,6 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
 
   if (undefined === intermediateResult[country]) {
     newResult[country] = {}
-    newResult[country][url] = {
-      cases: getOrZero(otherCoronaData.cases),
-      recovered: getOrZero(otherCoronaData.recovered),
-      deaths: getOrZero(otherCoronaData.deaths),
-      active: getOrZero(otherCoronaData.active),
-      rating: getOrZero(coronaData.rating),
-      population: getOrZero(otherCoronaData.population),
-      coordinates: getOrZero(otherCoronaData.coordinates)
-    }
-    return newResult
   }
 
   if (undefined === intermediateResult[country][url]) {
