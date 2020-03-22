@@ -197,14 +197,21 @@ module.exports.setup = function (app) {
 
     const filteredData = scrapedData.map(coronaDataMapper)
       .filter(ratingFilter(minRating))
-      .filter(countryParam ? countryFilter(countryParam.toUpperCase()) : countryFilter())
+      .filter(countryFilter(countryParam))
+      
     res.status(200).json(filteredData);
   });
 
   app.get("/api/timespan", cors(corsOptions), (req, res) => {
     const country = req.query.country
-    const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     const timeSpan = req.query.time
+
+    if (undefined == timeSpan) {
+      res.status(400).json({ result: {}, error: 'Please provide timespan' })
+      return
+    }
+
+    const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     const dateFolders = Array.from(Array(dayMap[timeSpan])).map((_, i) => {
       return dayjs(dateToday).subtract(i, 'day').format('YYYY-MM-DD')
     });
@@ -214,15 +221,10 @@ module.exports.setup = function (app) {
     dateFolders.forEach(date => {
       const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
         .map(coronaDataMapper)
-        .filter(!country ? countryFilter(country) : countryFilter())
+        .filter(countryFilter(country))
 
       returnData.push(countryDay)
     })
-
-
-    if (!country || !timeSpan) {
-      res.status(500).json({ result: {}, error: 'please provide country ISO-3 Code and timespan' })
-    }
 
     const settings = { timeSpan, dateToday, returnData }
 

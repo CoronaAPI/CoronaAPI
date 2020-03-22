@@ -38,7 +38,7 @@ const countryFilter = (allowedCountry) => {
     return _ => true;
   }
 
-  return coronaData => coronaData.country == allowedCountry
+  return coronaData => coronaData.country == allowedCountry.toUpperCase()
 }
 
 exports.readJsonFileSync = readJsonFileSync
