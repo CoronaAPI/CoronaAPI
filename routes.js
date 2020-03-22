@@ -1,4 +1,4 @@
-const { readJsonFileSync, mapDataModel, filterRating, countryFilter } = require('./utils/functions')
+const { readJsonFileSync, coronaDataMapper, ratingFilter, countryFilter } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const requireDir = require('require-dir')
@@ -22,7 +22,6 @@ const corsOptions = {
 
 module.exports.setup = function (app) {
   /**
-   *
    * @swagger
    * definitions:
    *   CoronaData:
@@ -47,6 +46,10 @@ module.exports.setup = function (app) {
    *         type: integer
    *         example: 19848
    *         description: The total number of cases taken into account the specified date filters 'since' and 'until'.
+   *       population:
+   *         type: integer
+   *         example: 19848
+   *         description: The number of people living in the country/state/county.
    *       recovered:
    *         type: integer
    *         example: 180
@@ -67,13 +70,70 @@ module.exports.setup = function (app) {
    *         type: number
    *         example: 0.17073170731707318
    *         description: A rating of the data that takes into account completeness, machine readability and best practices.
+   *       coordinates:
+   *         type: array
+   *         items:
+   *           type: number
+   *         minItems: 2
+   *         maxItems: 2
+   *         example: [10.2, 51.0]
+   *         description: The coordinates (longitude and latitude) representing the data set.
+   *
+   *   CoronaTimeSeries:
+   *     required:
+   *       - result
+   *     properties:
+   *       result:
+   *         type: object
+   *         properties:
+   *           timeSpan: 
+   *             type: string
+   *             enum: 
+   *               - 'week'
+   *               - 'month'
+   *               - 'year'
+   *             description: The selected time span for the time series Corona data.
+   *             example: week
+   *           dateToday:
+   *             type: string
+   *             description: The start date for the returnData.
+   *             example: 2020-03-22
+   *           returnData:
+   *             type: array
+   *             items:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 $ref: '#/definitions/CoronaData'
+   *               description:
+   *                 An array containing the Corona data for a specific day.
+   *             description: An array containing again an array of Corona data per day.
+   *
+   *   MetaData:
+   *     required:
+   *       - repo
+   *       - bug
+   *       - lastUpdate
+   *     properties:
+   *       repo:
+   *         type: string
+   *         example: https://github.com/CoronaAPI/Corona
+   *         description: The GitHub repository where this REST API lives in.
+   *       bug:
+   *         type: string
+   *         example: https://github.com/CoronaAPI/CoronaAPI/issues/new
+   *         description: The link that can be used to create a ticket in case you find a bug or wish a new functionality.
+   *       lastUpdate:
+   *         type: string
+   *         example: 2020-03-22
+   *         description: The date on which data has been fetched from different sources the last time.
    *
    * @swagger
    * /api/daily:
    *   get:
    *     tags:
    *       - CoronaAPI
-   *     description: Get high-level daily data - Country parameter optional.
+   *     description: Get high-level daily data on Corona infections around the world or for a specific country.
    *     parameters:
    *       - in: query
    *         name: country
@@ -87,7 +147,10 @@ module.exports.setup = function (app) {
    *         schema:
    *           type number
    *         required: false
-   *         description: Please enter a minimum rating of the data quality based upon (<a href="https://github.com/lazd/coronadatascraper">@lazd/coronadatascraper</a> data rating)
+   *         minimum: 0.0
+   *         maximum: 0.99
+   *         description: Please enter a minimum rating of the data quality based upon (<a href="https://github.com/lazd/coronadatascraper">@lazd/coronadatascraper</a> data rating).
+   *           The rating takes into account completeness, machine readability and best practices.
    *     responses:
    *       200:
    *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.
@@ -131,20 +194,21 @@ module.exports.setup = function (app) {
    *           type: array
    *           items:
    *             type: object
-   *             $ref: '#/definitions/CoronaData'
+   *             $ref: '#/definitions/CoronaTimeSeries'
    * /meta:
    *   get:
    *     tags:
    *       - CoronaAPI
-   *     description: Get metadata like lastUpdate, repo url, etc.
+   *     description: Get metadata on the REST API under use. That includes information like where to find the code, where to create new tickets
+   *       or when the underlying data has been updated the last time.
    *     responses:
    *       200:
-   *         description: The available COVID-19 data per country as a JSON array. The array of days for the time span requested for the country requested.
+   *         description: The metadata on the REST API under use.
    *         schema:
    *           type: array
    *           items:
    *             type: object
-   *             $ref: '#/definitions/CoronaData'
+   *             $ref: '#/definitions/MetaData'
    */
   const dateToday = dayjs().format('YYYY-MM-DD')
 
@@ -162,16 +226,23 @@ module.exports.setup = function (app) {
     const countryParam = req.query.country
     const minRating = req.query.rating
 
-    const filteredData = scrapedData.map(mapDataModel)
-      .filter(filterRating(minRating))
-      .filter(countryParam ? countryFilter(countryParam.toUpperCase()) : countryFilter())
+    const filteredData = scrapedData.map(coronaDataMapper)
+      .filter(ratingFilter(minRating))
+      .filter(countryFilter(countryParam))
+      
     res.status(200).json(filteredData);
   });
 
   app.get("/api/timespan", cors(corsOptions), (req, res) => {
     const country = req.query.country
-    const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     const timeSpan = req.query.time
+
+    if (undefined == timeSpan) {
+      res.status(400).json({ result: {}, error: 'Please provide timespan' })
+      return
+    }
+
+    const dayMap = { 'week': 7, 'month': 30, 'year': 365 }
     const dateFolders = Array.from(Array(dayMap[timeSpan])).map((_, i) => {
       return dayjs(dateToday).subtract(i, 'day').format('YYYY-MM-DD')
     });
@@ -180,16 +251,11 @@ module.exports.setup = function (app) {
 
     dateFolders.forEach(date => {
       const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
-        .map(mapDataModel)
-        .filter(!country ? countryFilter(country) : countryFilter())
+        .map(coronaDataMapper)
+        .filter(countryFilter(country))
 
       returnData.push(countryDay)
     })
-
-
-    if (!country || !timeSpan) {
-      res.status(500).json({ result: {}, error: 'please provide country ISO-3 Code and timespan' })
-    }
 
     const settings = { timeSpan, dateToday, returnData }
 

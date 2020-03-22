@@ -8,7 +8,7 @@ const readJsonFileSync = (filepath, encoding) => {
   return JSON.parse(file);
 }
 
-const mapDataModel = (coronaData) => {
+const coronaDataMapper = (coronaData) => {
   return {
     cases: coronaData.cases,
     country: coronaData.country,
@@ -25,7 +25,7 @@ const mapDataModel = (coronaData) => {
   }
 }
 
-const filterRating = (minRating) => {
+const ratingFilter = (minRating) => {
   if (undefined === minRating) {
     return _ => true;
   }
@@ -38,10 +38,10 @@ const countryFilter = (allowedCountry) => {
     return _ => true;
   }
 
-  return coronaData => coronaData.country == allowedCountry
+  return coronaData => coronaData.country == allowedCountry.toUpperCase()
 }
 
 exports.readJsonFileSync = readJsonFileSync
-exports.mapDataModel = mapDataModel
-exports.filterRating = filterRating
+exports.coronaDataMapper = coronaDataMapper
+exports.ratingFilter = ratingFilter
 exports.countryFilter = countryFilter
