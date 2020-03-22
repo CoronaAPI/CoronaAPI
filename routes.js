@@ -149,7 +149,11 @@ module.exports.setup = function (app) {
   const dateToday = dayjs().format('YYYY-MM-DD')
 
   app.get("/meta", cors(corsOptions), (req, res) => {
-    res.status(200).json({ lastUpdate: dateToday, repo: 'https://github.com/CoronaAPI/Corona' });
+    res.status(200).json({
+      lastUpdate: dateToday,
+      repo: 'https://github.com/CoronaAPI/Corona',
+      bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new'
+    });
   })
 
   app.get("/api/daily", cors(corsOptions), (req, res) => {
