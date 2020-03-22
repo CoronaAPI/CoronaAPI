@@ -10,6 +10,7 @@ const readJsonFileSync = (filepath, encoding) => {
 
 const mapDataModel = (coronaData) => {
   return {
+    cases: coronaData.cases,
     country: coronaData.country,
     state: coronaData.state,
     county: coronaData.county,
