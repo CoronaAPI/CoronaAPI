@@ -41,7 +41,52 @@ const countryFilter = (allowedCountry) => {
   return coronaData => coronaData.country == allowedCountry.toUpperCase()
 }
 
+const countryDatasourceReducer = (intermediateResult, coronaData) => {
+  const {country, url, ...otherCoronaData} = coronaData
+  const getOrZero = number => undefined === number ? 0 : number
+
+  let newResult = intermediateResult
+
+  if (undefined === intermediateResult[country]) {
+    newResult[country] = {}
+    newResult[country][url] = {
+      cases: getOrZero(otherCoronaData.cases),
+      recovered: getOrZero(otherCoronaData.recovered),
+      deaths: getOrZero(otherCoronaData.deaths),
+      active: getOrZero(otherCoronaData.active),
+      rating: getOrZero(coronaData.rating),
+      population: getOrZero(otherCoronaData.population),
+      coordinates: getOrZero(otherCoronaData.coordinates)
+    }
+    return newResult
+  }
+
+  if (undefined === intermediateResult[country][url]) {
+    newResult[country][url] = {
+      cases: getOrZero(otherCoronaData.cases),
+      recovered: getOrZero(otherCoronaData.recovered),
+      deaths: getOrZero(otherCoronaData.deaths),
+      active: getOrZero(otherCoronaData.active),
+      rating: getOrZero(coronaData.rating),
+      population: getOrZero(otherCoronaData.population),
+      coordinates: getOrZero(otherCoronaData.coordinates)
+    }
+    return newResult
+  }
+
+  let intermediateForCountryAndDatasource = newResult[country][url]
+  intermediateForCountryAndDatasource.cases += getOrZero(otherCoronaData.cases)
+  intermediateForCountryAndDatasource.active += getOrZero(otherCoronaData.active)
+  intermediateForCountryAndDatasource.recovered += getOrZero(otherCoronaData.recovered)
+  intermediateForCountryAndDatasource.deaths += getOrZero(otherCoronaData.deaths)
+  intermediateForCountryAndDatasource.population += getOrZero(otherCoronaData.population)
+  newResult[country][url] = intermediateForCountryAndDatasource
+
+  return newResult
+}
+
 exports.readJsonFileSync = readJsonFileSync
 exports.coronaDataMapper = coronaDataMapper
 exports.ratingFilter = ratingFilter
 exports.countryFilter = countryFilter
+exports.countryDatasourceReducer = countryDatasourceReducer

@@ -1,4 +1,4 @@
-const { readJsonFileSync, coronaDataMapper, ratingFilter, countryFilter } = require('./utils/functions')
+const { readJsonFileSync, coronaDataMapper, ratingFilter, countryFilter, countryDatasourceReducer } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const requireDir = require('require-dir')
@@ -108,6 +108,41 @@ module.exports.setup = function (app) {
    *               description:
    *                 An array containing the Corona data for a specific day.
    *             description: An array containing again an array of Corona data per day.
+   *   
+   *   CoronaPerCountryAndDatasource:
+   *     properties:
+   *       cases:
+   *         type: integer
+   *         example: 19848
+   *         description: The total number of cases for a country and data source.
+   *       population:
+   *         type: integer
+   *         example: 19848
+   *         description: The number of people living in the country.
+   *       recovered:
+   *         type: integer
+   *         example: 180
+   *         description: The number of recovered people for a country and data source.
+   *       deaths:
+   *         type: integer
+   *         example: 68
+   *         description: The number of people that died due to Corona Virus for a country and data source.
+   *       active:
+   *         type: integer
+   *         example: 19600
+   *         description: The number of people that are currently infected with Corona Virus for a country and data source.
+   *       rating:
+   *         type: number
+   *         example: 0.17073170731707318
+   *         description: A rating of the data that takes into account completeness, machine readability and best practices.
+   *       coordinates:
+   *         type: array
+   *         items:
+   *           type: number
+   *         minItems: 2
+   *         maxItems: 2
+   *         example: [10.2, 51.0]
+   *         description: The coordinates (longitude and latitude) representing the data set.
    *
    *   MetaData:
    *     required:
@@ -195,6 +230,34 @@ module.exports.setup = function (app) {
    *           items:
    *             type: object
    *             $ref: '#/definitions/CoronaTimeSeries'
+   * /api/countries:
+   *   get:
+   *     tags:
+   *       - CoronaAPI
+   *     description: Get Corona data for each country from different data sources.
+   *     parameters:
+   *       - in: query
+   *         name: country
+   *         schema:
+   *           type string
+   *         required: false
+   *         description: Please enter the 3-digit ISO Country Code. 
+   *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany).
+   *     responses:
+   *       200:
+   *         description: The Corona data for each country from different data sources.
+   *         schema: 
+   *           type: object
+   *           additionalProperties:
+   *             type: object
+   *             description: The country for which the data is bundled per data source.
+   *             example: DEU
+   *             additionalProperties:
+   *               type: object
+   *               description: The data source
+   *               example: gdfg
+   *               $ref: '#/definitions/CoronaPerCountryAndDatasource'
+   *             
    * /meta:
    *   get:
    *     tags:
@@ -262,4 +325,16 @@ module.exports.setup = function (app) {
     res.status(200).json({ result: settings })
   });
 
+  app.get("/api/countries", cors(corsOptions), (req, res) => {
+    const countryParam = req.query.country
+
+    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+
+    const filteredData = scrapedData
+      .map(coronaDataMapper)
+      .filter(countryFilter(countryParam))
+      .reduce(countryDatasourceReducer, {})
+
+    res.status(200).json(filteredData)
+  });
 };
