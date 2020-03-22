@@ -25,6 +25,14 @@ const mapDataModel = (coronaData) => {
   }
 }
 
+const mapRating = (minRating) => {
+  if (undefined == allowedCountry) {
+    return _ => true;
+  }
+
+  return coronaData => coronaData.rating >= minRating
+}
+
 const countryFilter = (allowedCountry) => {
   if (undefined == allowedCountry) {
     return _ => true;
@@ -35,4 +43,5 @@ const countryFilter = (allowedCountry) => {
 
 exports.readJsonFileSync = readJsonFileSync
 exports.mapDataModel = mapDataModel
+exports.mapRating = mapRating
 exports.countryFilter = countryFilter
