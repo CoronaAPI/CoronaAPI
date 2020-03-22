@@ -26,7 +26,7 @@ const mapDataModel = (coronaData) => {
 }
 
 const mapRating = (minRating) => {
-  if (undefined == allowedCountry) {
+  if (undefined == minRating) {
     return _ => true;
   }
 

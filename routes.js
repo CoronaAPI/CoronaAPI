@@ -181,13 +181,12 @@ module.exports.setup = function (app) {
   app.get("/api/daily/rating", cors(corsOptions), (req, res) => {
     const minRating = req.query.rating
     const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
-    if (!countryParam) {
-      res.status(200).json(scrapedData.map(mapDataModel));
+    if (!minRating) {
+      res.status(500).json({ error: 'Please enter a rating' });
     } else {
       const filteredData = scrapedData
         .map(mapDataModel)
-        .map(mapRating(minRating))
-        .filter(countryFilter(countryParam.toUpperCase()))
+        .filter(mapRating(minRating))
       res.status(200).json(filteredData);
     }
   });
