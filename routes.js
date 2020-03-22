@@ -1,4 +1,4 @@
-const { readJsonFileSync, mapDataModel, filterRating, countryFilter } = require('./utils/functions')
+const { readJsonFileSync, coronaDataMapper, ratingFilter, countryFilter } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const requireDir = require('require-dir')
@@ -195,8 +195,8 @@ module.exports.setup = function (app) {
     const countryParam = req.query.country
     const minRating = req.query.rating
 
-    const filteredData = scrapedData.map(mapDataModel)
-      .filter(filterRating(minRating))
+    const filteredData = scrapedData.map(coronaDataMapper)
+      .filter(ratingFilter(minRating))
       .filter(countryParam ? countryFilter(countryParam.toUpperCase()) : countryFilter())
     res.status(200).json(filteredData);
   });
@@ -213,7 +213,7 @@ module.exports.setup = function (app) {
 
     dateFolders.forEach(date => {
       const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
-        .map(mapDataModel)
+        .map(coronaDataMapper)
         .filter(!country ? countryFilter(country) : countryFilter())
 
       returnData.push(countryDay)
