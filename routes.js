@@ -78,6 +78,37 @@ module.exports.setup = function (app) {
    *         maxItems: 2
    *         example: [10.2, 51.0]
    *         description: The coordinates (longitude and latitude) representing the data set.
+   *
+   *   CoronaTimeSeries:
+   *     required:
+   *       - result
+   *     properties:
+   *       result:
+   *         type: object
+   *         properties:
+   *           timeSpan: 
+   *             type: string
+   *             enum: 
+   *               - 'week'
+   *               - 'month'
+   *               - 'year'
+   *             description: The selected time span for the time series Corona data.
+   *             example: week
+   *           dateToday:
+   *             type: string
+   *             description: The start date for the returnData.
+   *             example: 2020-03-22
+   *           returnData:
+   *             type: array
+   *             items:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 $ref: '#/definitions/CoronaData'
+   *               description:
+   *                 An array containing the Corona data for a specific day.
+   *             description: An array containing again an array of Corona data per day.
+   *
    *   MetaData:
    *     required:
    *       - repo
@@ -163,7 +194,7 @@ module.exports.setup = function (app) {
    *           type: array
    *           items:
    *             type: object
-   *             $ref: '#/definitions/CoronaData'
+   *             $ref: '#/definitions/CoronaTimeSeries'
    * /meta:
    *   get:
    *     tags:
