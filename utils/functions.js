@@ -18,7 +18,9 @@ const mapDataModel = (coronaData) => {
     deaths: coronaData.deaths,
     active: coronaData.active,
     url: coronaData.url,
-    rating: coronaData.rating
+    rating: coronaData.rating,
+    population: coronaData.population,
+    aggregate: coronaData.aggregate
   }
 }
 
