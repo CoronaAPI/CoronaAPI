@@ -41,8 +41,16 @@ const countryFilter = (allowedCountry) => {
   return coronaData => coronaData.country == allowedCountry.toUpperCase()
 }
 
+const sourceFilter = (source) => {
+  if (undefined === source) {
+    return _ => true;
+  }
+
+  return coronaData => coronaData.url == source
+}
+
 const countryDatasourceReducer = (intermediateResult, coronaData) => {
-  const {country, url, ...otherCoronaData} = coronaData
+  const { country, url, ...otherCoronaData } = coronaData
   const getOrZero = number => undefined === number ? 0 : number
 
   let newResult = intermediateResult
@@ -79,4 +87,5 @@ exports.readJsonFileSync = readJsonFileSync
 exports.coronaDataMapper = coronaDataMapper
 exports.ratingFilter = ratingFilter
 exports.countryFilter = countryFilter
+exports.sourceFilter = sourceFilter
 exports.countryDatasourceReducer = countryDatasourceReducer

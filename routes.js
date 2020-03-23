@@ -1,4 +1,4 @@
-const { readJsonFileSync, coronaDataMapper, ratingFilter, countryFilter, countryDatasourceReducer } = require('./utils/functions')
+const { readJsonFileSync, coronaDataMapper, ratingFilter, sourceFilter, countryFilter, countryDatasourceReducer } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const requireDir = require('require-dir')
@@ -186,6 +186,12 @@ module.exports.setup = function (app) {
    *         maximum: 0.99
    *         description: Please enter a minimum rating of the data quality based upon (<a href="https://github.com/lazd/coronadatascraper">@lazd/coronadatascraper</a> data rating).
    *           The rating takes into account completeness, machine readability and best practices.
+   *       - in: query
+   *         name: source
+   *         schema:
+   *           type string
+   *         required: false
+   *         description: Enter a source URL. For available sources, please check `/api/datasources` endpoint.
    *     responses:
    *       200:
    *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.
@@ -258,6 +264,19 @@ module.exports.setup = function (app) {
    *               example: gdfg
    *               $ref: '#/definitions/CoronaPerCountryAndDatasource'
    *             
+   * /api/datasources:
+   *   get:
+   *     tags:
+   *       - CoronaAPI
+   *     description: Get a list of datasources available via this API.
+   *     responses:
+   *       200:
+   *         description: The metadata on the REST API under use.
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: object
+   *             $ref: '#/definitions/MetaData'
    * /meta:
    *   get:
    *     tags:
@@ -288,10 +307,12 @@ module.exports.setup = function (app) {
 
     const countryParam = req.query.country
     const minRating = req.query.rating
+    const source = req.query.source
 
     const filteredData = scrapedData.map(coronaDataMapper)
       .filter(ratingFilter(minRating))
       .filter(countryFilter(countryParam))
+      .filter(sourceFilter(source))
 
     res.status(200).json(filteredData);
   });
@@ -336,5 +357,15 @@ module.exports.setup = function (app) {
       .reduce(countryDatasourceReducer, {})
 
     res.status(200).json(filteredData)
+  });
+
+  app.get("/api/datasources", cors(corsOptions), (req, res) => {
+    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+
+    let sources = []
+    scrapedData.map(data => sources.push({ source: data.url }))
+    returnData = [...new Set(sources.map(x => x.source))]
+
+    res.status(200).json(returnData)
   });
 };
