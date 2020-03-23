@@ -278,7 +278,7 @@ module.exports.setup = function (app) {
   app.get("/meta", cors(corsOptions), (req, res) => {
     res.status(200).json({
       lastUpdate: dateToday,
-      repo: 'https://github.com/CoronaAPI/Corona',
+      repo: 'https://github.com/CoronaAPI/CoronaAPI',
       bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new'
     });
   })
@@ -292,7 +292,7 @@ module.exports.setup = function (app) {
     const filteredData = scrapedData.map(coronaDataMapper)
       .filter(ratingFilter(minRating))
       .filter(countryFilter(countryParam))
-      
+
     res.status(200).json(filteredData);
   });
 
