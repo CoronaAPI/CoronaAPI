@@ -7,7 +7,6 @@
 TIME=$(date +%b-%d-%y)
 DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
-export node=/home/ubuntu/.nvm/versions/node/v12.16.1/bin/node
 
 ##################
 # SETUP
@@ -28,7 +27,9 @@ echo "[*] Repo successfully cloned"
 ###################
 
 cd coronadatascraper
+
 echo "[*] Installing coronadatascraper..."
+yarn install
 
 # HACK UNTIL KS SOURCE IS REMOVED
 if [ -d "$DIR/$DATE/coronadatascraper/src/events/crawler/scrapers/USA/KS" ]
@@ -37,9 +38,7 @@ then
 fi
 # END HACK
 
-yarn install
 echo "[*] Starting coronadatascraper..."
-# sudo -u ubuntu /home/ubuntu/.nvm/versions/node/v12.16.1/bin/node src/events/crawler/cli.js
 yarn start
 
 cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
