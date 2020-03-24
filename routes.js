@@ -293,6 +293,12 @@ module.exports.setup = function (app) {
    *             $ref: '#/definitions/MetaData'
    */
   const dateToday = dayjs().format('YYYY-MM-DD')
+  let scrapedData = ''
+  if (process.env.NODE_ENV === 'dev') {
+    scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+  } else {
+    scrapedData = readJsonFileSync(__dirname + `/../data/${dateToday}/data.json`)
+  }
 
   app.get("/meta", cors(corsOptions), (req, res) => {
     res.status(200).json({
@@ -303,7 +309,7 @@ module.exports.setup = function (app) {
   })
 
   app.get("/api/daily", cors(corsOptions), (req, res) => {
-    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+    // const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
 
     const countryParam = req.query.country
     const minRating = req.query.rating
@@ -334,7 +340,8 @@ module.exports.setup = function (app) {
     let returnData = []
 
     dateFolders.forEach(date => {
-      const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
+      // const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
+      scrapedData
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
@@ -349,8 +356,6 @@ module.exports.setup = function (app) {
   app.get("/api/countries", cors(corsOptions), (req, res) => {
     const countryParam = req.query.country
 
-    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
-
     const filteredData = scrapedData
       .map(coronaDataMapper)
       .filter(countryFilter(countryParam))
@@ -360,7 +365,7 @@ module.exports.setup = function (app) {
   });
 
   app.get("/api/datasources", cors(corsOptions), (req, res) => {
-    const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+    // const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
 
     let sources = []
     scrapedData.map(data => sources.push({ source: data.url }))
