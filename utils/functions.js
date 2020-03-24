@@ -4,8 +4,14 @@ const readJsonFileSync = (filepath, encoding) => {
   if (typeof (encoding) == 'undefined') {
     encoding = 'utf8';
   }
-  var file = fs.readFileSync(filepath, encoding);
-  return JSON.parse(file);
+
+  try {
+    const content = fs.readFileSync(filepath, encoding);
+    return JSON.parse(content);
+  } catch(err) {
+    console.error("No file exists for filepath='" + filepath + "'")
+    return []
+  }
 }
 
 const coronaDataMapper = (coronaData) => {

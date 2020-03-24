@@ -14,11 +14,11 @@ DIR="/opt/corona-api/data"
 
 echo "[*] Starting Daily Data Dump " + $TIME
 
-mkdir -p $DIR/$DATE
+sudo -u ubuntu mkdir -p $DIR/$DATE
 
 cd $DIR/$DATE
 
-git clone --recursive https://github.com/lazd/coronadatascraper
+sudo -u ubuntu git clone --recursive https://github.com/lazd/coronadatascraper
 
 echo "[*] Repo successfully cloned"
 
@@ -28,11 +28,11 @@ echo "[*] Repo successfully cloned"
 
 cd coronadatascraper
 echo "[*] Installing coronadatascraper..."
-yarn install
+sudo -u ubuntu yarn install
 echo "[*] Starting coronadatascraper..."
-yarn start
+sudo -u ubuntu yarn start
 
-cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
+sudo -u ubuntu cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
 echo "[*] Data successfully dumped " + $TIME
 
 ##################
@@ -43,8 +43,7 @@ echo ""
 echo "[*] Cleaning up data scrape"
 
 cd $DIR/$DATE
-shopt -s extglob
-rm -r !("data.json")
+rm -r coronadatascraper
 
 echo "[*] Daily Script Complete!"
 
