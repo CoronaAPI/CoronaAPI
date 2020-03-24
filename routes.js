@@ -309,7 +309,6 @@ module.exports.setup = function (app) {
   })
 
   app.get("/api/daily", cors(corsOptions), (req, res) => {
-    // const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
 
     const countryParam = req.query.country
     const minRating = req.query.rating
@@ -340,7 +339,6 @@ module.exports.setup = function (app) {
     let returnData = []
 
     dateFolders.forEach(date => {
-      // const countryDay = readJsonFileSync(__dirname + `/data/${date}/data.json`)
       scrapedData
         .map(coronaDataMapper)
         .filter(countryFilter(country))
@@ -365,7 +363,6 @@ module.exports.setup = function (app) {
   });
 
   app.get("/api/datasources", cors(corsOptions), (req, res) => {
-    // const scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
 
     let sources = []
     scrapedData.map(data => sources.push({ source: data.url }))
