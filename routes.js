@@ -314,7 +314,8 @@ module.exports.setup = function (app) {
     const minRating = req.query.rating
     const source = req.query.source
 
-    const filteredData = scrapedData.map(coronaDataMapper)
+    const filteredData = scrapedData
+      .map(coronaDataMapper)
       .filter(ratingFilter(minRating))
       .filter(countryFilter(countryParam))
       .filter(sourceFilter(source))
@@ -339,7 +340,12 @@ module.exports.setup = function (app) {
     let returnData = []
 
     dateFolders.forEach(date => {
-      scrapedData
+      if (process.env.NODE_ENV === 'dev') {
+        scrapedData = readJsonFileSync(__dirname + `/data/${date}/data.json`)
+      } else {
+        scrapedData = readJsonFileSync(__dirname + `/../data/${date}/data.json`)
+      }
+      const countryDay = scrapedData
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
