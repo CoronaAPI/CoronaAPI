@@ -83,31 +83,30 @@ module.exports.setup = function (app) {
    *     required:
    *       - result
    *     properties:
-   *       result:
+   *       timeSpan: 
+   *         type: string
+   *         enum: 
+   *           - 'week'
+   *           - 'month'
+   *           - 'year'
+   *       startingDay: 
+   *         type: string
+   *         description: Starting day for your request
+   *         example: '2020-03-22'
+   *       timeseries: 
    *         type: object
    *         properties:
-   *           timeSpan: 
+   *           date: 
    *             type: string
-   *             enum: 
-   *               - 'week'
-   *               - 'month'
-   *               - 'year'
-   *             description: The selected time span for the time series Corona data.
-   *             example: week
-   *           dateToday:
-   *             type: string
-   *             description: The start date for the returnData.
-   *             example: 2020-03-22
-   *           returnData:
+   *             description: Current day whose data will follow
+   *             example: '2020-03-22'
+   *           data:
    *             type: array
    *             items:
-   *               type: array
-   *               items:
-   *                 type: object
-   *                 $ref: '#/definitions/CoronaData'
-   *               description:
-   *                 An array containing the Corona data for a specific day.
-   *             description: An array containing again an array of Corona data per day.
+   *               type: object
+   *               $ref: '#/definitions/CoronaData'
+   *             description:
+   *               An array containing the Corona data for a specific day.
    *   
    *   CoronaPerCountryAndDatasource:
    *     properties:
@@ -349,12 +348,12 @@ module.exports.setup = function (app) {
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
-      returnData.push(countryDay)
+      returnData.push({ date: date, data: countryDay })
     })
 
-    const settings = { timeSpan, dateToday, returnData }
+    const settings = { timeSpan, startingDay: dateToday, timeseries: returnData }
 
-    res.status(200).json({ result: settings })
+    res.status(200).json(settings)
   });
 
   app.get("/api/countries", cors(corsOptions), (req, res) => {
