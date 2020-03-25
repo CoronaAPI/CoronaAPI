@@ -69,7 +69,7 @@ rm -r coronadatascraper
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"🚀 CoronaAPI Data Updated!"}' https://hooks.slack.com/services/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  >> /dev/null 2>&1
+	curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"🚀 API source data updated at *$TIME*"}},{"type":"divider"},{"type":"context","elements":[{"type":"mrkdwn","text":"For more info, checkout ssh://$HOSTNAME"}]}]}' https://hooks.slack.com/services/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  >> /dev/null 2>&1
 fi
 
 echo "[*] Daily Script Complete!"
