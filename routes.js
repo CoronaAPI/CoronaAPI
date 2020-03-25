@@ -1,6 +1,7 @@
 const { readJsonFileSync, coronaDataMapper, ratingFilter, sourceFilter, countryFilter, countryDatasourceReducer } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
+const fs = require('fs')
 const requireDir = require('require-dir')
 const dir = requireDir('./data/', { recurse: true })
 
@@ -297,12 +298,13 @@ module.exports.setup = function (app) {
    *             $ref: '#/definitions/MetaData'
    */
   const dateToday = dayjs().format('YYYY-MM-DD')
-  let scrapedData = ''
+  let dataFile
   if (process.env.NODE_ENV === 'dev') {
-    scrapedData = readJsonFileSync(__dirname + `/data/${dateToday}/data.json`)
+    dataFile = __dirname + `/data/${dateToday}/data.json`
   } else {
-    scrapedData = readJsonFileSync(__dirname + `/../data/${dateToday}/data.json`)
+    dataFile = __dirname + `/../data/${dateToday}/data.json`
   }
+  const scrapedData = readJsonFileSync(dataFile)
 
   app.get("/meta", cors(corsOptions), (req, res) => {
     const suggestions = [
@@ -312,8 +314,10 @@ module.exports.setup = function (app) {
     ]
     const i = Math.floor(Math.random() * suggestions.length);
 
+    const { ctime } = fs.statSync(dataFile)
+
     res.status(200).json({
-      lastUpdate: dateToday,
+      lastUpdate: ctime,
       repo: 'https://github.com/CoronaAPI/CoronaAPI',
       bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new',
       remember: suggestions[i]
