@@ -306,9 +306,9 @@ module.exports.setup = function (app) {
 
   app.get("/meta", cors(corsOptions), (req, res) => {
     const suggestions = [
-      " ..to wash your hands frequently!",
-      " ..to keep a safe distance to ours!",
-      " ..to avoid touching eyes, nose and mouth!"
+      "to wash your hands frequently!",
+      "to keep a safe distance to others!",
+      "to avoid touching eyes, nose and mouth!"
     ]
     const i = Math.floor(Math.random() * suggestions.length);
 
