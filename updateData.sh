@@ -37,13 +37,6 @@ cd $DIR/$DATE/coronadatascraper
 echo "[*] Installing coronadatascraper..."
 /usr/local/bin/yarn install
 
-# HACK UNTIL KS SOURCE IS REMOVED
-# if [ -d "$DIR/$DATE/coronadatascraper/src/events/crawler/scrapers/USA/KS" ]
-# then
-  # rm -r $DIR/$DATE/coronadatascraper/src/events/crawler/scrapers/USA/KS
-# fi
-# END HACK
-
 echo "[*] Starting coronadatascraper..."
 
 /usr/local/bin/yarn start
@@ -65,11 +58,11 @@ echo ""
 echo "[*] Cleaning up data scrape"
 
 cd $DIR/$DATE
-rm -r coronadatascraper
+rm -rf coronadatascraper
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-	curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"🚀 API source data updated at *$TIME*"}},{"type":"divider"},{"type":"context","elements":[{"type":"mrkdwn","text":"For more info, checkout ssh://$HOSTNAME"}]}]}' https://hooks.slack.com/services/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  >> /dev/null 2>&1
+  curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"🚀 API source data updated at *$TIME*"}},{"type":"divider"},{"type":"context","elements":[{"type":"mrkdwn","text":"For more info, checkout ssh://$HOSTNAME"}]}]}' https://hooks.slack.com/services/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  >> /dev/null 2>&1
 fi
 
 echo "[*] Daily Script Complete!"
