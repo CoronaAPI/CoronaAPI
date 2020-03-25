@@ -4,7 +4,7 @@
 # VARIABLES
 ###################
 
-TIME=$(date +%b-%d-%y %H:%M)
+TIME=$(date +%Y-%m-%d_%H:%M)
 DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
 
@@ -62,7 +62,6 @@ rm -rf coronadatascraper
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-  URL="https://hooks.slack.com/services/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"
   PAYLOAD="{
     \"blocks\": [
       {
@@ -80,14 +79,14 @@ then
         \"elements\": [
           {
 	    \"type\":\"mrkdwn\",
-	    \"text\":\"For more info, checkout ssh://ec2-18-195-101-161.eu-central-1.compute.amazonaws.com\"
+	    \"text\":\"For more info, checkout ssh:\/\/ec2-18-195-101-161.eu-central-1.compute.amazonaws.com\"
           }
         ]
       }
     ]
   }"
 
-  curl -X POST --data-urlencode "payload=$PAYLOAD" $URL >> /dev/null 2>&1
+  curl -X POST --data-urlencode "payload=$PAYLOAD" $SLACK_URL >> /dev/null 2>&1
 fi
 
 echo "[*] Daily Script Complete!"
