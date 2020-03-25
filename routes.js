@@ -148,6 +148,7 @@ module.exports.setup = function (app) {
    *       - repo
    *       - bug
    *       - lastUpdate
+   *       - remember
    *     properties:
    *       repo:
    *         type: string
@@ -159,8 +160,12 @@ module.exports.setup = function (app) {
    *         description: The link that can be used to create a ticket in case you find a bug or wish a new functionality.
    *       lastUpdate:
    *         type: string
-   *         example: 2020-03-22
+   *         example: '2020-03-22'
    *         description: The date on which data has been fetched from different sources the last time.
+   *       remember:
+   *         type: string
+   *         example: ' ..to wash your hands frequently!'
+   *         description: Reminder to all users in these times :)
    *
    * @swagger
    * /api/daily:
@@ -300,10 +305,18 @@ module.exports.setup = function (app) {
   }
 
   app.get("/meta", cors(corsOptions), (req, res) => {
+    const suggestions = [
+      " ..to wash your hands frequently!",
+      " ..to keep a safe distance to ours!",
+      " ..to avoid touching eyes, nose and mouth!"
+    ]
+    const i = Math.floor(Math.random() * suggestions.length);
+
     res.status(200).json({
       lastUpdate: dateToday,
       repo: 'https://github.com/CoronaAPI/CoronaAPI',
-      bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new'
+      bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new',
+      remember: suggestions[i]
     });
   })
 
