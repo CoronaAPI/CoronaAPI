@@ -35,7 +35,7 @@ fi
 cd $DIR/$DATE/coronadatascraper
 
 echo "[*] Installing coronadatascraper..."
-yarn install
+/usr/local/bin/yarn install
 
 # HACK UNTIL KS SOURCE IS REMOVED
 # if [ -d "$DIR/$DATE/coronadatascraper/src/events/crawler/scrapers/USA/KS" ]
@@ -46,11 +46,11 @@ yarn install
 
 echo "[*] Starting coronadatascraper..."
 
-yarn start
+/usr/local/bin/yarn start
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-  mv $DIR/$DATE/data.json{,.$(date +%Y%m%d_%H%M)}
+  mv $DIR/$DATE/data.json{,.$(date +%Y%m%d-%H%M)}
 fi
 
 cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
@@ -69,7 +69,7 @@ rm -r coronadatascraper
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-  curl -X POST -H 'Content-type: application/json' --data '{"text":"🚀 CoronaAPI Data Updated!"}' https://hooks.slack.com/services/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
+  curl -X POST -H 'Content-type: application/json' --data '{"text":"🚀 CoronaAPI Data Updated!"}' https://hooks.slack.com/services/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  >> /dev/null 2>&1
 fi
 
 echo "[*] Daily Script Complete!"
