@@ -6,7 +6,7 @@
 
 HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
 
-### 🖥️ [DevPost Project](https://devpost.com/software/1_038_a_daten_0193_coronaapi)
+#### 💌 Join our [Slack](https://join.slack.com/t/corona-api/shared_invite/zt-d3q97q52-2~0Jh7YV1WHVDY~TpENVtg)
 
 ## 🏗️ Usage
 
@@ -30,6 +30,8 @@ The API will then be listening on `localhost:3001`
     <td align="center"><a href="https://ndo.dev"><img src="https://avatars2.githubusercontent.com/u/7415984?v=4" width="100px;" alt=""/><br /><sub><b>Nico Domino</b></sub></a><br /><a href="https://github.com/all-contributors/all-contributors/commits?author=ndom91" title="Documentation">📖</a> <a href="#tool-jakebolam" title="Tools">🔧</a> <a href="#infra-ndom91" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-ndom91" title="Maintenance">🚧</a><a href="#design-juliawernecke" title="Design">🎨</a</td>
   </tr>
 </table>
+
+#### 🖥️ [DevPost](https://devpost.com/software/1_038_a_daten_0193_coronaapi) 
 
 ## 📝 License
 
