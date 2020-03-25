@@ -8,7 +8,7 @@ const readJsonFileSync = (filepath, encoding) => {
   try {
     const content = fs.readFileSync(filepath, encoding);
     return JSON.parse(content);
-  } catch(err) {
+  } catch (err) {
     console.error("No file exists for filepath='" + filepath + "'")
     return []
   }
@@ -20,6 +20,7 @@ const coronaDataMapper = (coronaData) => {
     country: coronaData.country,
     state: coronaData.state,
     county: coronaData.county,
+    city: coronaData.city,
     recovered: coronaData.recovered,
     deaths: coronaData.deaths,
     active: coronaData.active,
@@ -32,7 +33,7 @@ const coronaDataMapper = (coronaData) => {
 }
 
 const ratingFilter = (minRating) => {
-  if (undefined === minRating) {
+  if (minRating === undefined) {
     return _ => true;
   }
 
@@ -40,32 +41,56 @@ const ratingFilter = (minRating) => {
 }
 
 const countryFilter = (allowedCountry) => {
-  if (undefined === allowedCountry) {
+  if (allowedCountry === undefined) {
     return _ => true;
   }
 
-  return coronaData => coronaData.country == allowedCountry.toUpperCase()
+  return coronaData => coronaData.country === allowedCountry.toUpperCase()
+}
+
+const stateFilter = (state) => {
+  if (state === undefined) {
+    return _ => true;
+  }
+
+  return coronaData => coronaData.state === state
+}
+
+const countyFilter = (county) => {
+  if (county === undefined) {
+    return _ => true;
+  }
+
+  return coronaData => coronaData.county === county
+}
+
+const cityFilter = (city) => {
+  if (city === undefined) {
+    return _ => true;
+  }
+
+  return coronaData => coronaData.city === city
 }
 
 const sourceFilter = (source) => {
-  if (undefined === source) {
+  if (source === undefined) {
     return _ => true;
   }
 
-  return coronaData => coronaData.url == source
+  return coronaData => coronaData.url === source
 }
 
 const countryDatasourceReducer = (intermediateResult, coronaData) => {
   const { country, url, ...otherCoronaData } = coronaData
-  const getOrZero = number => undefined === number ? 0 : number
+  const getOrZero = number => number === undefined ? 0 : number
 
   let newResult = intermediateResult
 
-  if (undefined === intermediateResult[country]) {
+  if (intermediateResult[country] === undefined) {
     newResult[country] = {}
   }
 
-  if (undefined === intermediateResult[country][url]) {
+  if (intermediateResult[country][url] === undefined) {
     newResult[country][url] = {
       cases: getOrZero(otherCoronaData.cases),
       recovered: getOrZero(otherCoronaData.recovered),
@@ -93,5 +118,8 @@ exports.readJsonFileSync = readJsonFileSync
 exports.coronaDataMapper = coronaDataMapper
 exports.ratingFilter = ratingFilter
 exports.countryFilter = countryFilter
+exports.stateFilter = stateFilter
+exports.countyFilter = countyFilter
+exports.cityFilter = cityFilter
 exports.sourceFilter = sourceFilter
 exports.countryDatasourceReducer = countryDatasourceReducer

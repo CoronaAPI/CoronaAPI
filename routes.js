@@ -1,4 +1,14 @@
-const { readJsonFileSync, coronaDataMapper, ratingFilter, sourceFilter, countryFilter, countryDatasourceReducer } = require('./utils/functions')
+const {
+  readJsonFileSync,
+  coronaDataMapper,
+  ratingFilter,
+  sourceFilter,
+  countryFilter,
+  stateFilter,
+  countyFilter,
+  cityFilter,
+  countryDatasourceReducer
+} = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require("cors");
 const fs = require('fs')
@@ -183,6 +193,24 @@ module.exports.setup = function (app) {
    *         description: Please enter the 3-digit ISO Country Code. 
    *           For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target="_blank">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany). 
    *       - in: query
+   *         name: state
+   *         schema:
+   *           type string
+   *         required: false
+   *         description: Please enter a *state* name
+   *       - in: query
+   *         name: county
+   *         schema:
+   *           type string
+   *         required: false
+   *         description: Please enter a *county* name
+   *       - in: query
+   *         name: city
+   *         schema:
+   *           type string
+   *         required: false
+   *         description: Please enter a valid city name.
+   *       - in: query
    *         name: rating
    *         schema:
    *           type number
@@ -197,6 +225,12 @@ module.exports.setup = function (app) {
    *           type string
    *         required: false
    *         description: Enter a source URL. For available sources, please check `/api/datasources` endpoint.
+   *       - in: query
+   *         name: countryLevelOnly
+   *         schema:
+   *           type boolean
+   *         required: false
+   *         description: Enter 1 (true) or 0 (false) if you would like only country level data (no counties / cities).
    *     responses:
    *       200:
    *         description: The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.
@@ -328,13 +362,22 @@ module.exports.setup = function (app) {
 
     const countryParam = req.query.country
     const minRating = req.query.rating
+    const countryLevel = req.query.countryLevelOnly
+    const stateParam = countryLevel === '1' ? null : req.query.state
+    const countyParam = countryLevel === '1' ? null : req.query.county
+    const cityParam = countryLevel === '1' ? null : req.query.city
     const source = req.query.source
 
     const filteredData = scrapedData
       .map(coronaDataMapper)
       .filter(ratingFilter(minRating))
       .filter(countryFilter(countryParam))
+      .filter(stateFilter(stateParam))
+      .filter(countyFilter(countyParam))
+      .filter(cityFilter(cityParam))
       .filter(sourceFilter(source))
+
+    console.log(countryLevel, typeof countryLevel)
 
     res.status(200).json(filteredData);
   });
