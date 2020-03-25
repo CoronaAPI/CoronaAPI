@@ -356,11 +356,6 @@ module.exports.setup = function (app) {
     let returnData = []
 
     dateFolders.forEach(date => {
-      if (process.env.NODE_ENV === 'dev') {
-        scrapedData = readJsonFileSync(__dirname + `/data/${date}/data.json`)
-      } else {
-        scrapedData = readJsonFileSync(__dirname + `/../data/${date}/data.json`)
-      }
       const countryDay = scrapedData
         .map(coronaDataMapper)
         .filter(countryFilter(country))
