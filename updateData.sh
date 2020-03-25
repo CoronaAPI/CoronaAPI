@@ -4,7 +4,7 @@
 # VARIABLES
 ###################
 
-TIME=$(date +%b-%d-%y)
+TIME=$(date +%b-%d-%y %H:%M)
 DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
 
@@ -62,7 +62,32 @@ rm -rf coronadatascraper
 
 if [ -e "$DIR/$DATE/data.json" ]
 then
-  curl -X POST -H 'Content-type: application/json' --data "{\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"🚀 API source data updated at *$TIME*\"}},{\"type\":\"divider\"},{\"type\":\"context\",\"elements\":[{\"type\":\"mrkdwn\",\"text\":\"For more info, checkout ssh://$HOSTNAME\"}]}]}" https://hooks.slack.com/services/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  >> /dev/null 2>&1
+  URL="https://hooks.slack.com/services/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"
+  PAYLOAD="{
+    \"blocks\": [
+      {
+        \"type\":\"section\",
+        \"text\": {
+          \"type\":\"mrkdwn\",
+          \"text\":\"🚀 API source data updated at *$TIME*\"
+        }
+      },
+      {
+        \"type\":\"divider\"
+      },
+      {
+        \"type\":\"context\",
+        \"elements\": [
+          {
+	    \"type\":\"mrkdwn\",
+	    \"text\":\"For more info, checkout ssh://ec2-18-195-101-161.eu-central-1.compute.amazonaws.com\"
+          }
+        ]
+      }
+    ]
+  }"
+
+  curl -X POST --data-urlencode "payload=$PAYLOAD" $URL >> /dev/null 2>&1
 fi
 
 echo "[*] Daily Script Complete!"
