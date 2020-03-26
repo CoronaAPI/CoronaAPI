@@ -9,7 +9,7 @@ DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
 
 cleanAndCopy () {
-  FILE = $1
+  FILE=$1
   if [ -e "$DIR/$DATE/$FILE" ]
   then
     rm $DIR/$DATE/$FILE
@@ -88,7 +88,7 @@ echo "[*] Cleaning up data scrape"
 cd $DIR/$DATE
 rm -rf coronadatascraper
 
-if [ -e "$DIR/$DATE/data.json" && -e "$DIR/$DATE/report.json" ]
+if [[ -e "$DIR/$DATE/data.json" && -e "$DIR/$DATE/report.json" ]]
 then
   SOURCES=$(cat $DIR/$DATE/report.json | jq '.sources.numSources')
   ERRORS=$(cat $DIR/$DATE/report.json | jq '.sources.errors')
