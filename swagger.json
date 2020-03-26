@@ -38,7 +38,7 @@
     "http"
   ],
   "paths": {
-    "/api/daily": {
+    "/v1/daily": {
       "get": {
         "tags": [
           "Daily"
@@ -111,7 +111,7 @@
         }
       }
     },
-    "/api/daily/confirmed": {
+    "/v1/daily/confirmed": {
       "get": {
         "tags": [
           "Daily"
@@ -177,7 +177,7 @@
         }
       }
     },
-    "/api/daily/recovered": {
+    "/v1/daily/recovered": {
       "get": {
         "tags": [
           "Daily"
@@ -243,7 +243,7 @@
         }
       }
     },
-    "/api/daily/deaths": {
+    "/v1/daily/deaths": {
       "get": {
         "tags": [
           "Daily"
@@ -309,7 +309,7 @@
         }
       }
     },
-    "/api/timespan": {
+    "/v1/timespan": {
       "get": {
         "tags": [
           "Timeseries"
@@ -351,7 +351,7 @@
         }
       }
     },
-    "/api/countries": {
+    "/v1/countries": {
       "get": {
         "tags": [
           "Daily"
@@ -387,7 +387,7 @@
         }
       }
     },
-    "/api/datasources": {
+    "/v1/datasources": {
       "get": {
         "tags": [
           "Meta"
