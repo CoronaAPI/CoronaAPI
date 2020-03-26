@@ -38,7 +38,7 @@
     "http"
   ],
   "paths": {
-    "/v1/daily": {
+    "/daily": {
       "get": {
         "tags": [
           "Daily"
@@ -111,7 +111,7 @@
         }
       }
     },
-    "/v1/daily/confirmed": {
+    "/daily/confirmed": {
       "get": {
         "tags": [
           "Daily"
@@ -177,7 +177,7 @@
         }
       }
     },
-    "/v1/daily/recovered": {
+    "/daily/recovered": {
       "get": {
         "tags": [
           "Daily"
@@ -243,7 +243,7 @@
         }
       }
     },
-    "/v1/daily/deaths": {
+    "/daily/deaths": {
       "get": {
         "tags": [
           "Daily"
@@ -309,7 +309,7 @@
         }
       }
     },
-    "/v1/timespan": {
+    "/timespan": {
       "get": {
         "tags": [
           "Timeseries"
@@ -351,7 +351,7 @@
         }
       }
     },
-    "/v1/countries": {
+    "/countries": {
       "get": {
         "tags": [
           "Daily"
@@ -387,7 +387,7 @@
         }
       }
     },
-    "/v1/datasources": {
+    "/datasources": {
       "get": {
         "tags": [
           "Meta"
@@ -400,7 +400,7 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "$ref": "#/definitions/MetaData"
+                "$ref": "#/definitions/Datasources"
               }
             }
           }
@@ -613,6 +613,18 @@
           "type": "string",
           "example": " ..to wash your hands frequently!",
           "description": "Reminder to all users in these times :)"
+        }
+      }
+    },
+    "Datasources": {
+      "required": [
+        "repo"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "example": "https://github.com/CoronaAPI/Corona",
+          "description": "The GitHub repository where this REST API lives in."
         }
       }
     }

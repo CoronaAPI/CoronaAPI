@@ -67,7 +67,9 @@ module.exports.setup = function (app) {
     const pathParts = path.split('/')
     pathParts.shift()
     pathParts.shift()
+    console.log(pathParts)
     const newPath = pathParts.join('/')
+    console.log(newPath)
     res.redirect(`/v1/${newPath}`)
   })
 
