@@ -4,15 +4,25 @@
 # VARIABLES
 ###################
 
-TIME=$(date +%Y-%m-%d_%H:%M)
+TIME=$(date "+%Y-%m-%d %H:%M")
 DATE=$(date +%Y-%m-%d)
 DIR="/opt/corona-api/data"
+
+cleanAndCopy () {
+  FILE = $1
+  if [ -e "$DIR/$DATE/$FILE" ]
+  then
+    rm $DIR/$DATE/$FILE
+  fi
+
+  cp $DIR/$DATE/coronadatascraper/dist/$FILE $DIR/$DATE
+}
 
 ##################
 # SETUP
 ###################
 
-echo "[*] Starting Daily Data Dump " + $TIME
+echo "[*] Starting Daily Data Dump " $TIME
 
 mkdir -p $DIR/$DATE
 
@@ -41,12 +51,30 @@ echo "[*] Starting coronadatascraper..."
 
 /usr/local/bin/yarn start
 
-if [ -e "$DIR/$DATE/data.json" ]
-then
-  mv $DIR/$DATE/data.json{,.$(date +%Y%m%d-%H%M)}
-fi
+cleanAndCopy "data.json"
+cleanAndCopy "ratings.json"
+cleanAndCopy "report.json"
 
-cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
+# if [ -e "$DIR/$DATE/data.json" ]
+# then
+  # mv $DIR/$DATE/data.json{,.$(date +%Y%m%d-%H%M)}
+# fi
+
+# cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
+
+# if [ -e "$DIR/$DATE/ratings.json" ]
+# then
+  # rm $DIR/$DATE/ratings.json
+# fi
+
+# cp $DIR/$DATE/coronadatascraper/dist/ratings.json $DIR/$DATE
+
+# if [ -e "$DIR/$DATE/report.json" ]
+# then
+  # rm $DIR/$DATE/report.json
+# fi
+
+# cp $DIR/$DATE/coronadatascraper/dist/report.json $DIR/$DATE
 
 echo "[*] Data successfully dumped " + $TIME
 
@@ -60,15 +88,24 @@ echo "[*] Cleaning up data scrape"
 cd $DIR/$DATE
 rm -rf coronadatascraper
 
-if [ -e "$DIR/$DATE/data.json" ]
+if [ -e "$DIR/$DATE/data.json" && -e "$DIR/$DATE/report.json" ]
 then
+  SOURCES=$(cat $DIR/$DATE/report.json | jq '.sources.numSources')
+  ERRORS=$(cat $DIR/$DATE/report.json | jq '.sources.errors')
   PAYLOAD="{
     \"blocks\": [
       {
         \"type\":\"section\",
         \"text\": {
           \"type\":\"mrkdwn\",
-          \"text\":\"🚀 API source data updated at *$TIME*\"
+          \"text\":\"🚀 coronadatascraper executed successfully at *$TIME*\"
+        }
+      },
+      {
+        \"type\":\"section\",
+        \"text\": {
+          \"type\":\"mrkdwn\",
+          \"text\":\"Scraped $SOURCES sources, with the following errors: $ERRORS\"
         }
       },
       {
