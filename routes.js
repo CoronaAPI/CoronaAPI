@@ -164,6 +164,7 @@ module.exports.setup = function (app) {
   app.get("/v1/timespan", cors(corsOptions), (req, res) => {
     const country = req.query.country
     const timeSpan = req.query.time
+    let returnData = []
 
     if (undefined == timeSpan) {
       res.status(400).json({ result: {}, error: 'Please provide timespan' })
@@ -174,8 +175,6 @@ module.exports.setup = function (app) {
     const dateFolders = Array.from(Array(dayMap[timeSpan])).map((_, i) => {
       return dayjs(dateToday).subtract(i, 'day').format('YYYY-MM-DD')
     });
-
-    let returnData = []
 
     dateFolders.forEach(date => {
       let file
@@ -189,7 +188,10 @@ module.exports.setup = function (app) {
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
-      returnData.push({ date: date, data: countryDay || 'No data available for this day' })
+      returnData.push({
+        date: date,
+        data: countryDay.length > 0 ? countryDay : 'No data available for this day'
+      })
     })
 
     const settings = { timeSpan, startingDay: dateToday, timeseries: returnData }
