@@ -178,11 +178,18 @@ module.exports.setup = function (app) {
     let returnData = []
 
     dateFolders.forEach(date => {
-      const countryDay = scrapedData
+      let file
+      if (process.env.NODE_ENV === 'dev') {
+        file = __dirname + `/data/${date}/data.json`
+      } else {
+        file = __dirname + `/../data/${date}/data.json`
+      }
+      const jsonData = readJsonFileSync(file)
+      const countryDay = jsonData
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
-      returnData.push({ date: date, data: countryDay })
+      returnData.push({ date: date, data: countryDay || 'No data available for this day' })
     })
 
     const settings = { timeSpan, startingDay: dateToday, timeseries: returnData }
