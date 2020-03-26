@@ -44,6 +44,22 @@ module.exports.setup = function (app) {
   }
   const scrapedData = readJsonFileSync(dataFile)
 
+  // Redirect for original routes
+  app.get("/meta", cors(corsOptions), (req, res) => {
+    res.redirect('/v1/meta')
+  })
+
+  app.get("/api/*", cors(corsOptions), (req, res) => {
+    const path = req.path
+    const pathParts = path.split('/')
+    pathParts.shift()
+    pathParts.shift()
+    const newPath = pathParts.join('/')
+    res.redirect(`/v1/${newPath}`)
+  })
+  // End redirects
+
+
   app.get("/v1/meta", cors(corsOptions), (req, res) => {
     const suggestions = [
       "to wash your hands frequently!",
@@ -60,20 +76,6 @@ module.exports.setup = function (app) {
       bug: 'https://github.com/CoronaAPI/CoronaAPI/issues/new',
       remember: suggestions[i]
     });
-  })
-
-  // Redirect for original routes
-  app.get("/meta", cors(corsOptions), (req, res) => {
-    res.redirect('/v1/meta')
-  })
-
-  app.get("/api/*", cors(corsOptions), (req, res) => {
-    const path = req.path
-    const pathParts = path.split('/')
-    pathParts.shift()
-    pathParts.shift()
-    const newPath = pathParts.join('/')
-    res.redirect(`/v1/${newPath}`)
   })
 
   app.get("/v1/daily", cors(corsOptions), (req, res) => {
@@ -213,9 +215,48 @@ module.exports.setup = function (app) {
   app.get("/v1/datasources", cors(corsOptions), (req, res) => {
 
     let sources = []
+    let sourcesArray = []
     scrapedData.map(data => sources.push({ source: data.url }))
-    returnData = [...new Set(sources.map(x => x.source))]
+    sourcesArray = [...new Set(sources.map(x => x.source))]
 
-    res.status(200).json(returnData)
+    res.status(200).json(sourcesArray)
+  });
+
+  app.get("/v1/total", cors(corsOptions), (req, res) => {
+
+    let sources = []
+    let sourcesArray = []
+    let returnArray = []
+    scrapedData.map(data => sources.push({ source: data.url }))
+    sourcesArray = [...new Set(sources.map(x => x.source))]
+
+    sourcesArray.forEach(source => {
+      const sourceHit = scrapedData.filter(data => data.url === source)
+      let countySum = 0
+      let citySum = 0
+      let stateSum = 0
+      let countrySum = 0
+      sourceHit.forEach(hit => {
+        if (hit.city) {
+          citySum = citySum + hit.cases
+          return
+        } else if (hit.county) {
+          countySum = countySum + hit.cases
+          return
+        } else if (hit.state) {
+          stateSum = stateSum + hit.cases
+          return
+        } else if (hit.country) {
+          countrySum = countrySum + hit.cases
+          return
+        }
+      })
+
+      sumArray = { citySum, countySum, stateSum, countrySum }
+      const sum = citySum + countySum + stateSum + countrySum
+      returnArray.push({ source: source, sum: sum, sumArray })
+    })
+
+    res.status(200).json(returnArray)
   });
 };

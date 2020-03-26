@@ -394,7 +394,27 @@
         "description": "Get a list of datasources available via this API.",
         "responses": {
           "200": {
-            "description": "The metadata on the REST API under use.",
+            "description": "The list of available sources of the API.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/Datasources"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/total": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "description": "Total world figures, split on datasource",
+        "responses": {
+          "200": {
+            "description": "Array of datasources, and world sums for each.",
             "schema": {
               "type": "array",
               "items": {
