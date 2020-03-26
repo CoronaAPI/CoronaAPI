@@ -18,6 +18,7 @@ const fs = require('fs')
 const requireDir = require('require-dir')
 const dir = requireDir('./data/', { recurse: true })
 
+// Dummy CORS Functions in case we need them later - currently just returns true
 const whitelist = ["*"];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -34,15 +35,21 @@ const corsOptions = {
   }
 };
 
+// Exports (routes) into server.js 
 module.exports.setup = function (app) {
+  // Setup variables for use later on in the various routes
   const dateToday = dayjs().format('YYYY-MM-DD')
-  let dataFile
+  let dataFile = ''
+  let ratingsFile = ''
   if (process.env.NODE_ENV === 'dev') {
     dataFile = __dirname + `/data/${dateToday}/data.json`
+    ratingsFile = __dirname + `/data/${dateToday}/ratings.json`
   } else {
     dataFile = __dirname + `/../data/${dateToday}/data.json`
+    ratingsFile = __dirname + `/../data/${dateToday}/ratings.json`
   }
   const scrapedData = readJsonFileSync(dataFile)
+  const ratingsData = readJsonFileSync(ratingsFile)
 
   // Redirect for original routes
   app.get("/meta", cors(corsOptions), (req, res) => {
@@ -59,7 +66,7 @@ module.exports.setup = function (app) {
   })
   // End redirects
 
-
+  // Begin Routes
   app.get("/v1/meta", cors(corsOptions), (req, res) => {
     const suggestions = [
       "to wash your hands frequently!",
@@ -220,6 +227,22 @@ module.exports.setup = function (app) {
     sourcesArray = [...new Set(sources.map(x => x.source))]
 
     res.status(200).json(sourcesArray)
+  });
+
+  app.get("/v1/datasources/details", cors(corsOptions), (req, res) => {
+    let sources = []
+    ratingsData.map(data => {
+      sources.push({
+        country: data.country,
+        state: data.state,
+        aggregate: data.aggregate,
+        source: data.url,
+        rating: data.rating,
+        type: data.type
+      })
+    })
+
+    res.status(200).json(sources)
   });
 
   app.get("/v1/total", cors(corsOptions), (req, res) => {

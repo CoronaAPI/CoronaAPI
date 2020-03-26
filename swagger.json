@@ -663,15 +663,43 @@
     },
     "DatasourcesDetails": {
       "required": [
+        "country",
+        "state",
+        "aggregate",
         "source",
-        "url",
-        "maintainer"
+        "rating",
+        "type"
       ],
       "properties": {
+        "country": {
+          "type": "string",
+          "example": "USA",
+          "description": "Which country is covered by this datasource"
+        },
+        "state": {
+          "type": "string",
+          "example": "CA",
+          "description": "Which state is covered by this datasource (optional)"
+        },
+        "aggregate": {
+          "type": "string",
+          "example": "county",
+          "description": "On which geographic level is this datasource based?"
+        },
         "source": {
           "type": "string",
           "example": "https://github.com/CSSEGISandData/COVID-19",
           "description": "The GitHub repository where this datasource is located."
+        },
+        "rating": {
+          "type": "number",
+          "example": "0.5342423",
+          "description": "@lazd/coronadatascraper numerical quality rating"
+        },
+        "type": {
+          "type": "string",
+          "example": "json",
+          "description": "In which form is the data gathered from this source"
         }
       }
     }
