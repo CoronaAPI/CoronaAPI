@@ -188,6 +188,11 @@ module.exports.setup = function (app) {
         .map(coronaDataMapper)
         .filter(countryFilter(country))
 
+<<<<<<< HEAD
+=======
+      console.log(countryDay)
+
+>>>>>>> 49c3bf1875e9e736ac7afa873a30a4bcdddb8759
       returnData.push({
         date: date,
         data: countryDay.length > 0 ? countryDay : 'No data available for this day'
