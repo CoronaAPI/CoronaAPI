@@ -14,11 +14,11 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 
-let host
 if (process.env.NODE_ENV === 'dev') {
-  host = `localhost:${PORT}`
-} else {
-  host = `corona.ndo.dev`
+  const host = `localhost:${PORT}`
+  const schemes = ['http']
+  swaggerDocument.host = host
+  swaggerDocument.schemes = schemes
 }
 
 app.get('/', (req, res) => {
