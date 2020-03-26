@@ -62,14 +62,13 @@ module.exports.setup = function (app) {
     });
   })
 
+  // Redirect for original routes
   app.get("/api/*", cors(corsOptions), (req, res) => {
     const path = req.path
     const pathParts = path.split('/')
     pathParts.shift()
     pathParts.shift()
-    console.log(pathParts)
     const newPath = pathParts.join('/')
-    console.log(newPath)
     res.redirect(`/v1/${newPath}`)
   })
 

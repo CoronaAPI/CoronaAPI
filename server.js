@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 app.get('/', (req, res) => {
-  res.redirect('https://corona-api-landingpage.netlify.com/');
+  res.redirect('https://corona-api.org/');
 })
 
 app.get('/api-docs/swagger.json', (req, res) => {
@@ -30,12 +30,12 @@ app.get('/api-docs/swagger.json', (req, res) => {
   res.send(swaggerDocument);
 });
 
+// Redirect for original URL
 app.use('/api-docs/swagger-ui', (req, res) => {
   res.redirect('/api-docs')
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 
 routes_v1.setup(app)
 

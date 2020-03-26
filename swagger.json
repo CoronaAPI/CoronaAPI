@@ -94,7 +94,7 @@
             "name": "countryLevelOnly",
             "type": "boolean",
             "required": false,
-            "description": "Enter 1 (true) or 0 (false) if you would like only country level data (no counties / cities)."
+            "description": "Enter 'true' or 'false' if you would like only country level data (no counties / cities / states)."
           }
         ],
         "responses": {
@@ -508,6 +508,7 @@
       "properties": {
         "timeSpan": {
           "type": "string",
+          "description": "How far back would you like data for?",
           "enum": [
             "week",
             "month",
