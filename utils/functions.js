@@ -14,6 +14,30 @@ const readJsonFileSync = (filepath, encoding) => {
   }
 }
 
+const casesMap = (coronaData) => {
+  return {
+    cases: coronaData.cases,
+    country: coronaData.country,
+    url: coronaData.url,
+  }
+}
+
+const recoveredMap = (coronaData) => {
+  return {
+    recovered: coronaData.recovered,
+    country: coronaData.country,
+    url: coronaData.url,
+  }
+}
+
+const deathMap = (coronaData) => {
+  return {
+    deaths: coronaData.deaths,
+    country: coronaData.country,
+    url: coronaData.url,
+  }
+}
+
 const coronaDataMapper = (coronaData) => {
   return {
     cases: coronaData.cases,
@@ -116,6 +140,9 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
 
 exports.readJsonFileSync = readJsonFileSync
 exports.coronaDataMapper = coronaDataMapper
+exports.casesMap = casesMap
+exports.recoveredMap = recoveredMap
+exports.deathMap = deathMap
 exports.ratingFilter = ratingFilter
 exports.countryFilter = countryFilter
 exports.stateFilter = stateFilter

@@ -1,0 +1,620 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "An HTTP API serving structured information on COVID-19's march around the globe.",
+    "version": "0.0.5",
+    "title": "CoronaAPI",
+    "termsOfService": "https://corona-api.org/impressum",
+    "contact": {
+      "email": "yo@ndo.dev"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "corona.ndo.dev",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "Daily",
+      "description": "Daily COVID-19 Data"
+    },
+    {
+      "name": "Timeseries",
+      "description": "Timeseries COVID-19 Data"
+    },
+    {
+      "name": "Meta",
+      "description": "More information about the API / its endpoints",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "https://corona-api.org"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/api/daily": {
+      "get": {
+        "tags": [
+          "Daily"
+        ],
+        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "type": "string",
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *state* name"
+          },
+          {
+            "in": "query",
+            "name": "county",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *county* name"
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a valid city name."
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "type": "number",
+            "required": false,
+            "minimum": 0,
+            "maximum": 0.99,
+            "description": "Please enter a minimum rating of the data quality based upon (<a href=\"https://github.com/lazd/coronadatascraper\">@lazd/coronadatascraper</a> data rating). The rating takes into account completeness, machine readability and best practices."
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "type": "string",
+            "required": false,
+            "description": "Enter a source URL. For available sources, please check `/api/datasources` endpoint."
+          },
+          {
+            "in": "query",
+            "name": "countryLevelOnly",
+            "type": "boolean",
+            "required": false,
+            "description": "Enter 1 (true) or 0 (false) if you would like only country level data (no counties / cities)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The available Corona Virus data per country as a JSON array. The array as well as the data for each country is filtered according to the request parameters.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaData"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/daily/confirmed": {
+      "get": {
+        "tags": [
+          "Daily"
+        ],
+        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false,
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *state* name"
+          },
+          {
+            "in": "query",
+            "name": "county",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *county* name"
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a valid city name."
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "type": "number",
+            "required": false,
+            "minimum": 0,
+            "maximum": 0.99,
+            "description": "Please enter a minimum rating of the data quality based upon (<a href=\"https://github.com/lazd/coronadatascraper\">@lazd/coronadatascraper</a> data rating). The rating takes into account completeness, machine readability and best practices."
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "type": "string",
+            "required": false,
+            "description": "Enter a source URL. For available sources, please check `/api/datasources` endpoint."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The available Corona Virus confirmed cases data, including datasource URL",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaData"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/daily/recovered": {
+      "get": {
+        "tags": [
+          "Daily"
+        ],
+        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false,
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *state* name"
+          },
+          {
+            "in": "query",
+            "name": "county",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *county* name"
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a valid city name."
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "type": "number",
+            "required": false,
+            "minimum": 0,
+            "maximum": 0.99,
+            "description": "Please enter a minimum rating of the data quality based upon (<a href=\"https://github.com/lazd/coronadatascraper\">@lazd/coronadatascraper</a> data rating). The rating takes into account completeness, machine readability and best practices."
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "type": "string",
+            "required": false,
+            "description": "Enter a source URL. For available sources, please check `/api/datasources` endpoint."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The available Corona Virus confirmed cases data, including datasource URL",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaData"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/daily/deaths": {
+      "get": {
+        "tags": [
+          "Daily"
+        ],
+        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false,
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *state* name"
+          },
+          {
+            "in": "query",
+            "name": "county",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a *county* name"
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "type": "string",
+            "required": false,
+            "description": "Please enter a valid city name."
+          },
+          {
+            "in": "query",
+            "name": "rating",
+            "type": "number",
+            "required": false,
+            "minimum": 0,
+            "maximum": 0.99,
+            "description": "Please enter a minimum rating of the data quality based upon (<a href=\"https://github.com/lazd/coronadatascraper\">@lazd/coronadatascraper</a> data rating). The rating takes into account completeness, machine readability and best practices."
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "type": "string",
+            "required": false,
+            "description": "Enter a source URL. For available sources, please check `/api/datasources` endpoint."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The available Corona Virus confirmed cases data, including datasource URL",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaData"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/timespan": {
+      "get": {
+        "tags": [
+          "Timeseries"
+        ],
+        "description": "Get high-level daily data for a given country over time.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false,
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          },
+          {
+            "in": "query",
+            "name": "time",
+            "type": "string",
+            "enum": [
+              "week",
+              "month",
+              "year"
+            ],
+            "default": "week",
+            "required": true,
+            "description": "Please choose a timespan, how far back you want data. Must be one of \"week\", \"month\", \"year\"."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The available COVID-19 data per country as a JSON array. The array of days for the time span requested for the country requested.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaTimeSeries"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/countries": {
+      "get": {
+        "tags": [
+          "Daily"
+        ],
+        "description": "Get Corona data for each country from different data sources.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false,
+            "description": "Please enter the 3-digit ISO Country Code. For valid codes to use see <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> (e.g. DEU for Germany)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Corona data for each country from different data sources.",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "description": "The country for which the data is bundled per data source.",
+                "example": "DEU",
+                "additionalProperties": {
+                  "type": "object",
+                  "description": "The data source",
+                  "example": "gdfg",
+                  "$ref": "#/definitions/CoronaPerCountryAndDatasource"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/datasources": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "description": "Get a list of datasources available via this API.",
+        "responses": {
+          "200": {
+            "description": "The metadata on the REST API under use.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/MetaData"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meta": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "description": "Get metadata on the REST API under use. That includes information like where to find the code, where to create new tickets or when the underlying data has been updated the last time.",
+        "responses": {
+          "200": {
+            "description": "The metadata on the REST API under use.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/MetaData"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CoronaData": {
+      "required": [
+        "country",
+        "source",
+        "rating"
+      ],
+      "properties": {
+        "country": {
+          "type": "string",
+          "example": "USA",
+          "description": "The country according to <a href=https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3 target=\"_blank\">ISO 3166-1 alpha-3</a> for which the data is valid."
+        },
+        "state": {
+          "type": "string",
+          "example": "MO",
+          "description": "The geographical region of a country for which the data is valid."
+        },
+        "county": {
+          "type": "string",
+          "example": "Knox County",
+          "description": "The geographical region of a state or country for which the data is valid."
+        },
+        "cases": {
+          "type": "integer",
+          "example": 19848,
+          "description": "The total number of cases taken into account the specified date filters 'since' and 'until'."
+        },
+        "population": {
+          "type": "integer",
+          "example": 19848,
+          "description": "The number of people living in the country/state/county."
+        },
+        "recovered": {
+          "type": "integer",
+          "example": 180,
+          "description": "The number of recovered people taken into account the specified date filters 'since' and 'until'."
+        },
+        "deaths": {
+          "type": "integer",
+          "example": 68,
+          "description": "The number of people that died due to Corona Virus taken into account the specified date filters 'since' and 'until'."
+        },
+        "active": {
+          "type": "integer",
+          "example": 19600,
+          "description": "The number of people that are currently infected with Corona Virus taken into account the specified date filters 'since' and 'until'."
+        },
+        "url": {
+          "type": "string",
+          "example": "https://covid19-germany.appspot.com/now",
+          "description": "The url (source) from which the data has been taken."
+        },
+        "rating": {
+          "type": "number",
+          "example": 0.17073170731707318,
+          "description": "A rating of the data that takes into account completeness, machine readability and best practices."
+        },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "example": [
+            10.2,
+            51
+          ],
+          "description": "The coordinates (longitude and latitude) representing the data set."
+        }
+      }
+    },
+    "CoronaTimeSeries": {
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "timeSpan": {
+          "type": "string",
+          "enum": [
+            "week",
+            "month",
+            "year"
+          ]
+        },
+        "startingDay": {
+          "type": "string",
+          "description": "Starting day for your request",
+          "example": "2020-03-22"
+        },
+        "timeseries": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "description": "Current day whose data will follow",
+              "example": "2020-03-22"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CoronaData"
+              },
+              "description": "An array containing the Corona data for a specific day."
+            }
+          }
+        }
+      }
+    },
+    "CoronaPerCountryAndDatasource": {
+      "properties": {
+        "cases": {
+          "type": "integer",
+          "example": 19848,
+          "description": "The total number of cases for a country and data source."
+        },
+        "population": {
+          "type": "integer",
+          "example": 19848,
+          "description": "The number of people living in the country."
+        },
+        "recovered": {
+          "type": "integer",
+          "example": 180,
+          "description": "The number of recovered people for a country and data source."
+        },
+        "deaths": {
+          "type": "integer",
+          "example": 68,
+          "description": "The number of people that died due to Corona Virus for a country and data source."
+        },
+        "active": {
+          "type": "integer",
+          "example": 19600,
+          "description": "The number of people that are currently infected with Corona Virus for a country and data source."
+        },
+        "rating": {
+          "type": "number",
+          "example": 0.17073170731707318,
+          "description": "A rating of the data that takes into account completeness, machine readability and best practices."
+        },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "example": [
+            10.2,
+            51
+          ],
+          "description": "The coordinates (longitude and latitude) representing the data set."
+        }
+      }
+    },
+    "MetaData": {
+      "required": [
+        "repo",
+        "bug",
+        "lastUpdate",
+        "remember"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "example": "https://github.com/CoronaAPI/Corona",
+          "description": "The GitHub repository where this REST API lives in."
+        },
+        "bug": {
+          "type": "string",
+          "example": "https://github.com/CoronaAPI/CoronaAPI/issues/new",
+          "description": "The link that can be used to create a ticket in case you find a bug or wish a new functionality."
+        },
+        "lastUpdate": {
+          "type": "string",
+          "example": "2020-03-22",
+          "description": "The date on which data has been fetched from different sources the last time."
+        },
+        "remember": {
+          "type": "string",
+          "example": " ..to wash your hands frequently!",
+          "description": "Reminder to all users in these times :)"
+        }
+      }
+    }
+  }
+}
