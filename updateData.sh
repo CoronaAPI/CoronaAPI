@@ -92,6 +92,14 @@ if [[ -e "$DIR/$DATE/data.json" && -e "$DIR/$DATE/report.json" ]]
 then
   SOURCES=$(cat $DIR/$DATE/report.json | jq '.sources.numSources')
   ERRORS=$(cat $DIR/$DATE/report.json | jq '.sources.errors')
+  ERRORS_TEXT=""
+  if [ $ERRORS = "[]" ]
+  then
+    ERRORS_TEXT="without any errors"
+  else
+    ERRORS_TEXT="with the following errors: $ERRORS"
+  fi
+
   PAYLOAD="{
     \"blocks\": [
       {
@@ -105,7 +113,7 @@ then
         \"type\":\"section\",
         \"text\": {
           \"type\":\"mrkdwn\",
-          \"text\":\"Scraped $SOURCES sources, with the following errors: $ERRORS\"
+          \"text\":\"Scraped $SOURCES sources, $ERRORS_TEXT\"
         }
       },
       {
