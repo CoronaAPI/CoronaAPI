@@ -44,7 +44,7 @@ module.exports.setup = function (app) {
   }
   const scrapedData = readJsonFileSync(dataFile)
 
-  app.get("/meta", cors(corsOptions), (req, res) => {
+  app.get("/v1/meta", cors(corsOptions), (req, res) => {
     const suggestions = [
       "to wash your hands frequently!",
       "to keep a safe distance to others!",
