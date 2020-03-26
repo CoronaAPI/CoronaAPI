@@ -63,6 +63,10 @@ module.exports.setup = function (app) {
   })
 
   // Redirect for original routes
+  app.get("/meta", cors(corsOptions), (req, res) => {
+    res.redirect('/v1/meta')
+  })
+
   app.get("/api/*", cors(corsOptions), (req, res) => {
     const path = req.path
     const pathParts = path.split('/')
@@ -77,9 +81,9 @@ module.exports.setup = function (app) {
     const countryParam = req.query.country
     const minRating = req.query.rating
     const countryLevel = req.query.countryLevelOnly
-    const stateParam = countryLevel === '1' ? null : req.query.state
-    const countyParam = countryLevel === '1' ? null : req.query.county
-    const cityParam = countryLevel === '1' ? null : req.query.city
+    const stateParam = countryLevel === 'true' ? '' : req.query.state
+    const countyParam = countryLevel === 'true' ? '' : req.query.county
+    const cityParam = countryLevel === 'true' ? '' : req.query.city
     const source = req.query.source
 
     const filteredData = scrapedData
