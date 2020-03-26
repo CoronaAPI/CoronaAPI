@@ -92,6 +92,7 @@ if [[ -e "$DIR/$DATE/data.json" && -e "$DIR/$DATE/report.json" ]]
 then
   SOURCES=$(cat $DIR/$DATE/report.json | jq '.sources.numSources')
   ERRORS=$(cat $DIR/$DATE/report.json | jq '.sources.errors')
+  TIME2=$(date "+%Y-%m-%d %H:%M")
   ERRORS_TEXT=""
   if [ $ERRORS = "[]" ]
   then
@@ -106,7 +107,7 @@ then
         \"type\":\"section\",
         \"text\": {
           \"type\":\"mrkdwn\",
-          \"text\":\"🚀 coronadatascraper executed successfully at *$TIME*\"
+          \"text\":\"🚀 coronadatascraper executed successfully at *$TIME UTC* and ran until *$TIME2 UTC*\"
         }
       },
       {
