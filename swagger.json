@@ -13,7 +13,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "corona.ndo.dev",
+  "host": "data.corona-api.org",
   "basePath": "/v1",
   "tags": [
     {
@@ -115,7 +115,7 @@
         "tags": [
           "Daily"
         ],
-        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "description": "Get only confirmed daily case numbers",
         "parameters": [
           {
             "in": "query",
@@ -181,7 +181,7 @@
         "tags": [
           "Daily"
         ],
-        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "description": "Get only daily recovered numbers",
         "parameters": [
           {
             "in": "query",
@@ -247,7 +247,7 @@
         "tags": [
           "Daily"
         ],
-        "description": "Get high-level daily data on Corona infections around the world or for a specific country.",
+        "description": "Get only daily 'deaths' numbers",
         "parameters": [
           {
             "in": "query",
@@ -313,7 +313,7 @@
         "tags": [
           "Timeseries"
         ],
-        "description": "Get high-level daily data for a given country over time.",
+        "description": "Get data over time for a specific country.",
         "parameters": [
           {
             "in": "query",
@@ -400,6 +400,26 @@
               "items": {
                 "type": "object",
                 "$ref": "#/definitions/Datasources"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasources/details": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "description": "Get a list of datasources and their maintainers and contact info.",
+        "responses": {
+          "200": {
+            "description": "The list of available sources of the API.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/DatasourcesDetails"
               }
             }
           }
@@ -637,14 +657,21 @@
       }
     },
     "Datasources": {
+      "type": "string",
+      "example": "https://github.com/CSSEGISandData/COVID-19",
+      "description": "Source location of a datasource."
+    },
+    "DatasourcesDetails": {
       "required": [
-        "repo"
+        "source",
+        "url",
+        "maintainer"
       ],
       "properties": {
-        "repo": {
+        "source": {
           "type": "string",
-          "example": "https://github.com/CoronaAPI/Corona",
-          "description": "The GitHub repository where this REST API lives in."
+          "example": "https://github.com/CSSEGISandData/COVID-19",
+          "description": "The GitHub repository where this datasource is located."
         }
       }
     }
