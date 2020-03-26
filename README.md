@@ -20,6 +20,10 @@ HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://git
 
 The API will then be listening on `localhost:3001`
 
+## ⚙️ Implementations
+
+- R Library [paulvern/covid19]( https://github.com/paulvern/covid19/tree/master/readcorona )
+
 ## 🙏 Contributors
 
 <table>
