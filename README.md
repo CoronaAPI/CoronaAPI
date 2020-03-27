@@ -2,6 +2,11 @@
 
 # 🦠 Corona API 
 
+![Version](https://img.shields.io/github/package-json/v/coronaapi/coronaapi?style=flat-square)
+![David](https://img.shields.io/david/coronaapi/coronaapi?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/coronaapi/coronaapi?style=flat-square)
+![Website](https://img.shields.io/website?down_color=lightgrey&down_message=offline&style=flat-square&up_color=green&up_message=online&url=https%3A%2F%2Fdata.corona-api.org)
+
 ### #WirVsVirus Project 0193
 
 HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
@@ -23,6 +28,11 @@ The API will then be listening on `localhost:3001`
 ## ⚙️ Implementations
 
 - R Library [paulvern/covid19]( https://github.com/paulvern/covid19/tree/master/readcorona )
+
+## 👀 Status
+
+- [AWS Lambda `/daily` Route](https://updown.io/z9uf)
+- [AWS EC2 `/daily` Route](https://updown.io/gks9)
 
 ## 🙏 Contributors
 
