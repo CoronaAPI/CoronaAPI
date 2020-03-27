@@ -1,13 +1,13 @@
-const fs = require("fs");
+const fs = require('fs')
 
 const readJsonFileSync = (filepath, encoding) => {
-  if (typeof (encoding) == 'undefined') {
-    encoding = 'utf8';
+  if (typeof (encoding) === 'undefined') {
+    encoding = 'utf8'
   }
 
   try {
-    const content = fs.readFileSync(filepath, encoding);
-    return JSON.parse(content);
+    const content = fs.readFileSync(filepath, encoding)
+    return JSON.parse(content)
   } catch (err) {
     console.error("No file exists for filepath='" + filepath + "'")
     return []
@@ -18,7 +18,7 @@ const casesMap = (coronaData) => {
   return {
     cases: coronaData.cases,
     country: coronaData.country,
-    url: coronaData.url,
+    url: coronaData.url
   }
 }
 
@@ -26,7 +26,7 @@ const recoveredMap = (coronaData) => {
   return {
     recovered: coronaData.recovered,
     country: coronaData.country,
-    url: coronaData.url,
+    url: coronaData.url
   }
 }
 
@@ -34,7 +34,7 @@ const deathMap = (coronaData) => {
   return {
     deaths: coronaData.deaths,
     country: coronaData.country,
-    url: coronaData.url,
+    url: coronaData.url
   }
 }
 
@@ -58,7 +58,7 @@ const coronaDataMapper = (coronaData) => {
 
 const ratingFilter = (minRating) => {
   if (minRating === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.rating >= minRating
@@ -66,7 +66,7 @@ const ratingFilter = (minRating) => {
 
 const countryFilter = (allowedCountry) => {
   if (allowedCountry === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.country === allowedCountry.toUpperCase()
@@ -74,7 +74,7 @@ const countryFilter = (allowedCountry) => {
 
 const stateFilter = (state) => {
   if (state === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.state === state
@@ -82,7 +82,7 @@ const stateFilter = (state) => {
 
 const countyFilter = (county) => {
   if (county === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.county === county
@@ -90,7 +90,7 @@ const countyFilter = (county) => {
 
 const cityFilter = (city) => {
   if (city === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.city === city
@@ -98,7 +98,7 @@ const cityFilter = (city) => {
 
 const sourceFilter = (source) => {
   if (source === undefined) {
-    return _ => true;
+    return _ => true
   }
 
   return coronaData => coronaData.url === source
@@ -108,7 +108,7 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
   const { country, url, ...otherCoronaData } = coronaData
   const getOrZero = number => number === undefined ? 0 : number
 
-  let newResult = intermediateResult
+  const newResult = intermediateResult
 
   if (intermediateResult[country] === undefined) {
     newResult[country] = {}
@@ -127,7 +127,7 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
     return newResult
   }
 
-  let intermediateForCountryAndDatasource = newResult[country][url]
+  const intermediateForCountryAndDatasource = newResult[country][url]
   intermediateForCountryAndDatasource.cases += getOrZero(otherCoronaData.cases)
   intermediateForCountryAndDatasource.active += getOrZero(otherCoronaData.active)
   intermediateForCountryAndDatasource.recovered += getOrZero(otherCoronaData.recovered)
