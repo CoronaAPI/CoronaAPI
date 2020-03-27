@@ -2,17 +2,14 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const swaggerUi = require('swagger-ui-express')
-const routes_v1 = require('./routes')
+const routesV1 = require('./routes')
 const swaggerDocument = require('./swagger.json')
 const responseTime = require('response-time')
-const redis = require('redis')
 
 const PORT = process.env.port || 3001
 
 app.use(express.urlencoded({ extended: true }))
-app.use(bodyParser.json())
 app.use(express.json())
 app.use(responseTime())
 app.use(cors())
@@ -40,7 +37,7 @@ app.use('/api-docs/swagger-ui', (req, res) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-routes_v1.setup(app)
+routesV1.setup(app)
 
 app.listen(PORT, () => {
   console.log(`Server is listening on localhost:${PORT}`)
