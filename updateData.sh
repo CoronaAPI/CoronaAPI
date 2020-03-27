@@ -96,44 +96,45 @@ then
   ERRORS_TEXT=""
   if [ $ERRORS = "[]" ]
   then
-    ERRORS_TEXT="without any errors"
+    echo "[*] coronadatascraper successfully run without any errors"
   else
     ERRORS_TEXT="with the following errors: $ERRORS"
+    PAYLOAD="{
+      \"blocks\": [
+        {
+          \"type\":\"section\",
+          \"text\": {
+            \"type\":\"mrkdwn\",
+            \"text\":\"🚀 coronadatascraper executed successfully at *$TIME UTC* and ran until *$TIME2 UTC*\"
+          }
+        },
+        {
+          \"type\":\"section\",
+          \"text\": {
+            \"type\":\"mrkdwn\",
+            \"text\":\"Scraped $SOURCES sources, $ERRORS_TEXT\"
+          }
+        },
+        {
+          \"type\":\"divider\"
+        },
+        {
+          \"type\":\"context\",
+          \"elements\": [
+            {
+	      \"type\":\"mrkdwn\",
+	      \"text\":\"For more info, checkout ssh:\/\/ec2-18-195-101-161.eu-central-1.compute.amazonaws.com\"
+            }
+          ]
+        }
+      ]
+    }"
+  
+    curl -X POST --data-urlencode "payload=$PAYLOAD" $SLACK_URL >> /dev/null 2>&1
   fi
 
-  PAYLOAD="{
-    \"blocks\": [
-      {
-        \"type\":\"section\",
-        \"text\": {
-          \"type\":\"mrkdwn\",
-          \"text\":\"🚀 coronadatascraper executed successfully at *$TIME UTC* and ran until *$TIME2 UTC*\"
-        }
-      },
-      {
-        \"type\":\"section\",
-        \"text\": {
-          \"type\":\"mrkdwn\",
-          \"text\":\"Scraped $SOURCES sources, $ERRORS_TEXT\"
-        }
-      },
-      {
-        \"type\":\"divider\"
-      },
-      {
-        \"type\":\"context\",
-        \"elements\": [
-          {
-	    \"type\":\"mrkdwn\",
-	    \"text\":\"For more info, checkout ssh:\/\/ec2-18-195-101-161.eu-central-1.compute.amazonaws.com\"
-          }
-        ]
-      }
-    ]
-  }"
-
-  curl -X POST --data-urlencode "payload=$PAYLOAD" $SLACK_URL >> /dev/null 2>&1
 fi
 
+echo ""
 echo "[*] Daily Script Complete!"
 
