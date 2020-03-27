@@ -6,6 +6,14 @@ const bodyParser = require("body-parser");
 const swaggerUi = require('swagger-ui-express');
 const routes_v1 = require('./routes')
 const swaggerDocument = require('./swagger.json');
+const Bearer = require('@bearer/node-agent')
+
+await Bearer.init({
+  secretKey: "sk_production_OdeSni-rXJmVzAyGlsv4wfYx-U06Npyd",
+  ignored: ["api-domain-to-ignore.com"],
+  stripSensitiveData: true,
+  stripSensitiveKeys: /^authorization$|^client.?id$|^access.?token$|^client.?secret$/i
+})
 
 const PORT = process.env.port || 3001
 
