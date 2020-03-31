@@ -40,20 +40,20 @@ module.exports.setup = function (app) {
   // Setup variables for use later on in the various routes
   const dateToday = dayjs().format('YYYY-MM-DD')
   let dataFile = ''
-  let ratingsFile = ''
+  let reportFile = ''
   if (process.env.NODE_ENV === 'dev') {
     dataFile = path.join(__dirname, `/data/${dateToday}/data.json`)
-    ratingsFile = path.join(__dirname, `/data/${dateToday}/ratings.json`)
+    reportFile = path.join(__dirname, `/data/${dateToday}/report.json`)
   } else {
     dataFile = path.join(__dirname, `/../data/${dateToday}/data.json`)
-    ratingsFile = path.join(__dirname, `/../data/${dateToday}/ratings.json`)
+    reportFile = path.join(__dirname, `/../data/${dateToday}/report.json`)
   }
   const scrapedData = readJsonFileSync(dataFile)
-  const ratingsData = readJsonFileSync(ratingsFile)
-  const redisClient = redis.createClient()
-  redisClient.on('error', (error) => {
-    console.error(error)
-  })
+  const reportData = readJsonFileSync(reportFile)
+  // const redisClient = redis.createClient()
+  // redisClient.on('error', (error) => {
+  //   console.error(error)
+  // })
 
   // const checkCache = (req, res, next) => {
   //   const id = [...req.query. ].join('')
@@ -119,7 +119,7 @@ module.exports.setup = function (app) {
     const cityParam = countryLevel === 'true' ? '' : req.query.city
     const source = req.query.source
 
-    const redisKey = ['v1daily_', countryParam, minRating, countryLevel, stateParam, countyParam, cityParam, source].join('')
+    // const redisKey = ['v1daily_', countryParam, minRating, countryLevel, stateParam, countyParam, cityParam, source].join('')
 
     const getData = () => {
       return scrapedData
@@ -132,15 +132,17 @@ module.exports.setup = function (app) {
         .filter(sourceFilter(source))
     }
 
-    redisClient.get(redisKey, (err, data) => {
-      err && res.status(500).send(err)
-      if (data) {
-        res.set('X-Powered-By-Redis', true).status(200).json(JSON.parse(data))
-      } else {
-        redisClient.setex(redisKey, 60, JSON.stringify(getData()))
-        res.set('X-Powered-By-Redis', false).status(200).json(getData())
-      }
-    })
+    res.status(200).json(getData())
+
+    // redisClient.get(redisKey, (err, data) => {
+    //   err && res.status(500).send(err)
+    //   if (data) {
+    //     res.set('X-Powered-By-Redis', true).status(200).json(JSON.parse(data))
+    //   } else {
+    //     redisClient.setex(redisKey, 60, JSON.stringify(getData()))
+    //     res.set('X-Powered-By-Redis', false).status(200).json(getData())
+    //   }
+    // })
   })
 
   app.get('/v1/daily/raw', cors(corsOptions), (req, res) => {
@@ -299,9 +301,11 @@ module.exports.setup = function (app) {
   })
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
+    // const total = reportData.scrape.crosscheckReports.reduce(
     const total = scrapedData.reduce(
       (result, current) => {
-        if (current.aggregate === "country") {
+        console.log(current)
+        if (current.aggregate === 'country') {
           return {
             cases: result.cases + current.cases,
             active: current.active ? result.active + current.active : result.active + 0,
