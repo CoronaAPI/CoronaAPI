@@ -138,6 +138,38 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
   return newResult
 }
 
+const reduceData = (data, reduced) => {
+  return data.forEach(d => {
+    if (!reduced.countries.includes(d.country)) {
+      const totalOfCountry = data.reduce(
+        (result, current) => {
+          if (d.country === current.country) {
+            return {
+              cases: current.cases ? result.cases + current.cases : result.cases + 0,
+              active: current.active ? result.active + current.active : result.active + 0,
+              deaths: current.deaths ? result.deaths + current.deaths : result.deaths + 0,
+              recovered: current.recovered ? result.recovered + current.recovered : result.recovered + 0
+            }
+          }
+          return result
+        },
+        {
+          cases: 0,
+          active: 0,
+          deaths: 0,
+          recovered: 0,
+        }
+      )
+
+      reduced.cases = reduced.cases + totalOfCountry.cases
+      reduced.active = reduced.active + totalOfCountry.active
+      reduced.recovered = reduced.recovered + totalOfCountry.recovered
+      reduced.deaths = reduced.deaths + totalOfCountry.deaths
+      reduced.countries.push(d.country)
+    }
+  })
+}
+
 exports.readJsonFileSync = readJsonFileSync
 exports.coronaDataMapper = coronaDataMapper
 exports.casesMap = casesMap
@@ -150,3 +182,4 @@ exports.countyFilter = countyFilter
 exports.cityFilter = cityFilter
 exports.sourceFilter = sourceFilter
 exports.countryDatasourceReducer = countryDatasourceReducer
+exports.reduceData = reduceData

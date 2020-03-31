@@ -10,7 +10,8 @@ const {
   stateFilter,
   countyFilter,
   cityFilter,
-  countryDatasourceReducer
+  countryDatasourceReducer,
+  reduceData
 } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require('cors')
@@ -285,27 +286,20 @@ module.exports.setup = function (app) {
   })
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
-    // const total = reportData.scrape.crosscheckReports.reduce(
-    const total = scrapedData.reduce(
-      (result, current) => {
-        console.log(current)
-        if (current.aggregate === 'country') {
-          return {
-            cases: result.cases + current.cases,
-            active: current.active ? result.active + current.active : result.active + 0,
-            deaths: current.deaths ? result.deaths + current.deaths : result.deaths + 0,
-            recovered: current.recovered ? result.recovered + current.recovered : result.recovered + 0
-          }
-        }
-        return result
-      },
-      {
-        cases: 0,
-        active: 0,
-        deaths: 0,
-        recovered: 0
-      }
-    )
+    const onlyCounties = scrapedData.filter(l => l.county || l.aggregate === "county")
+    const onlyStates = scrapedData.filter(l => l.state && !l.county)
+    const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county)
+    const total = {
+      cases: 0,
+      active: 0,
+      deaths: 0,
+      recovered: 0,
+      countries: []
+    }
+
+    reduceData(onlyCounties, total)
+    reduceData(onlyStates, total)
+    reduceData(onlyCountries, total)
 
     res.status(200).json(total)
   })
