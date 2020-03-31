@@ -284,22 +284,6 @@ module.exports.setup = function (app) {
     res.status(200).json(sourcesArray)
   })
 
-  app.get('/v1/datasources/details', cors(corsOptions), (req, res) => {
-    const sources = []
-    ratingsData.map(data => {
-      sources.push({
-        country: data.country,
-        state: data.state,
-        aggregate: data.aggregate,
-        source: data.url,
-        rating: data.rating,
-        type: data.type
-      })
-    })
-
-    res.status(200).json(sources)
-  })
-
   app.get('/v1/total', cors(corsOptions), (req, res) => {
     // const total = reportData.scrape.crosscheckReports.reduce(
     const total = scrapedData.reduce(
