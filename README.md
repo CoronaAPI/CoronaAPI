@@ -38,16 +38,35 @@ The API will then be listening on `localhost:3001`
 <table>
   <tr>
     <td align="center">
-    <a href="https://github.com/brauls">
-    <img src="https://avatars.githubusercontent.com/u/6483465?v=2" width="100px;" alt=""/>
-    <br />
-    <sub><b>Benedikt Rauls</b></sub></a>
-    <br /> 
-    <a href="https://github.com/CoronaAPI/CoronaAPI/commits?author=brauls" title="Documentation">📖</a> 
-    <a href="https://github.com/CoronaAPI/CoronaAPI/pulls?q=is%3Apr+reviewed-by%3Abrauls" title="Reviewed Pull Requests">👀</a> 
-    <a href="#tool-brauls" title="Tools">🔧</a>
+      <a href="https://github.com/brauls">
+      <img src="https://avatars.githubusercontent.com/u/6483465?v=2" width="100px;" alt=""/>
+      <br />
+      <sub><b>Benedikt Rauls</b></sub></a>
+      <br /> 
+      <a href="https://github.com/CoronaAPI/CoronaAPI/commits?author=brauls" title="Documentation">📖</a> 
+      <a href="https://github.com/CoronaAPI/CoronaAPI/pulls?q=is%3Apr+reviewed-by%3Abrauls" title="Reviewed Pull Requests">👀</a> 
+      <a href="#tool-brauls" title="Tools">🔧</a>
+      <a href="#code-brauls" title="Code">💻</a>
     </td>
-    <td align="center"><a href="https://ndo.dev"><img src="https://avatars2.githubusercontent.com/u/7415984?v=4" width="100px;" alt=""/><br /><sub><b>Nico Domino</b></sub></a><br /><a href="https://github.com/CoronaAPI/CoronaAPI/commits?author=ndom91" title="Documentation">📖</a> <a href="#tool-ndom91" title="Tools">🔧</a> <a href="#infra-ndom91" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-ndom91" title="Maintenance">🚧</a><a href="#design-juliawernecke" title="Design">🎨</a></td>
+    <td align="center">
+      <a href="https://ndo.dev">
+        <img src="https://avatars2.githubusercontent.com/u/7415984?v=4" width="100px;" alt=""/><br />
+        <sub><b>Nico Domino</b></sub>
+      </a><br />
+      <a href="https://github.com/CoronaAPI/CoronaAPI/commits?author=ndom91" title="Documentation">📖</a> <a href="#tool-ndom91" title="Tools">🔧</a> 
+      <a href="#infra-ndom91" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> 
+      <a href="#maintenance-ndom91" title="Maintenance">🚧</a>
+      <a href="#design-juliawernecke" title="Design">🎨</a>
+      <a href="#code-ndom91" title="Code">💻</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/martiL">
+        <img src="https://avatars2.githubusercontent.com/u/5569498?v=4" width="100px;" alt=""/><br />
+        <sub><b>Martin Lux</b></sub>
+      </a><br />
+      <a href="https://github.com/CoronaAPI/CoronaAPI/commits?author=martiL" title="Documentation">📖</a>
+      <a href="#code-martiL" title="Code">💻</a>
+    </td>
   </tr>
 </table>
 
