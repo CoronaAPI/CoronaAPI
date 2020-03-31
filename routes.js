@@ -17,7 +17,6 @@ var dayjs = require('dayjs')
 const cors = require('cors')
 const fs = require('fs')
 const path = require('path')
-const redis = require('redis')
 
 // Dummy CORS Functions in case we need them later - currently just returns true
 // const whitelist = ['*']
@@ -51,31 +50,6 @@ module.exports.setup = function (app) {
   }
   const scrapedData = readJsonFileSync(dataFile)
   const reportData = readJsonFileSync(reportFile)
-  // const redisClient = redis.createClient()
-  // redisClient.on('error', (error) => {
-  //   console.error(error)
-  // })
-
-  // const checkCache = (req, res, next) => {
-  //   const id = [...req.query. ].join('')
-
-  //   // get data value for key =id
-  //   redisClient.get(id, (err, data) => {
-  //     if (err) {
-  //       console.log(err)
-  //       res.status(500).send(err)
-  //     }
-  //     // if no match found
-  //     if (data != null) {
-  //       res.send(data)
-  //     } else {
-  //       // proceed to next middleware function
-  //       next()
-  //     }
-  //   })
-  // }
-
-  // const middleware = { cors: cors(corsOptions), checkCache }
 
   // Redirect for original routes
   app.get('/meta', cors(corsOptions), (req, res) => {
@@ -120,8 +94,6 @@ module.exports.setup = function (app) {
     const cityParam = countryLevel === 'true' ? '' : req.query.city
     const source = req.query.source
 
-    // const redisKey = ['v1daily_', countryParam, minRating, countryLevel, stateParam, countyParam, cityParam, source].join('')
-
     const getData = () => {
       return scrapedData
         .map(coronaDataMapper)
@@ -134,16 +106,6 @@ module.exports.setup = function (app) {
     }
 
     res.status(200).json(getData())
-
-    // redisClient.get(redisKey, (err, data) => {
-    //   err && res.status(500).send(err)
-    //   if (data) {
-    //     res.set('X-Powered-By-Redis', true).status(200).json(JSON.parse(data))
-    //   } else {
-    //     redisClient.setex(redisKey, 60, JSON.stringify(getData()))
-    //     res.set('X-Powered-By-Redis', false).status(200).json(getData())
-    //   }
-    // })
   })
 
   app.get('/v1/daily/raw', cors(corsOptions), (req, res) => {
@@ -286,7 +248,7 @@ module.exports.setup = function (app) {
   })
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
-    const onlyCounties = scrapedData.filter(l => l.county || l.aggregate === "county")
+    const onlyCounties = scrapedData.filter(l => l.county || l.aggregate === 'county')
     const onlyStates = scrapedData.filter(l => l.state && !l.county)
     const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county)
     const total = {
