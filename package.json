@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV='dev' nodemon server.js",
+    "dev": "NODE_ENV='dev' nodemon --harmony server.js",
     "start": "NODE_ENV='prod' node server.js"
   },
   "repository": {

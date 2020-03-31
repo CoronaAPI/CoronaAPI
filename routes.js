@@ -10,7 +10,8 @@ const {
   stateFilter,
   countyFilter,
   cityFilter,
-  countryDatasourceReducer
+  countryDatasourceReducer,
+  reduceData
 } = require('./utils/functions')
 var dayjs = require('dayjs')
 const cors = require('cors')
@@ -40,20 +41,20 @@ module.exports.setup = function (app) {
   // Setup variables for use later on in the various routes
   const dateToday = dayjs().format('YYYY-MM-DD')
   let dataFile = ''
-  let ratingsFile = ''
+  let reportFile = ''
   if (process.env.NODE_ENV === 'dev') {
     dataFile = path.join(__dirname, `/data/${dateToday}/data.json`)
-    ratingsFile = path.join(__dirname, `/data/${dateToday}/ratings.json`)
+    reportFile = path.join(__dirname, `/data/${dateToday}/report.json`)
   } else {
     dataFile = path.join(__dirname, `/../data/${dateToday}/data.json`)
-    ratingsFile = path.join(__dirname, `/../data/${dateToday}/ratings.json`)
+    reportFile = path.join(__dirname, `/../data/${dateToday}/report.json`)
   }
   const scrapedData = readJsonFileSync(dataFile)
-  const ratingsData = readJsonFileSync(ratingsFile)
-  const redisClient = redis.createClient()
-  redisClient.on('error', (error) => {
-    console.error(error)
-  })
+  const reportData = readJsonFileSync(reportFile)
+  // const redisClient = redis.createClient()
+  // redisClient.on('error', (error) => {
+  //   console.error(error)
+  // })
 
   // const checkCache = (req, res, next) => {
   //   const id = [...req.query. ].join('')
@@ -119,7 +120,7 @@ module.exports.setup = function (app) {
     const cityParam = countryLevel === 'true' ? '' : req.query.city
     const source = req.query.source
 
-    const redisKey = ['v1daily_', countryParam, minRating, countryLevel, stateParam, countyParam, cityParam, source].join('')
+    // const redisKey = ['v1daily_', countryParam, minRating, countryLevel, stateParam, countyParam, cityParam, source].join('')
 
     const getData = () => {
       return scrapedData
@@ -132,15 +133,17 @@ module.exports.setup = function (app) {
         .filter(sourceFilter(source))
     }
 
-    redisClient.get(redisKey, (err, data) => {
-      err && res.status(500).send(err)
-      if (data) {
-        res.set('X-Powered-By-Redis', true).status(200).json(JSON.parse(data))
-      } else {
-        redisClient.setex(redisKey, 60, JSON.stringify(getData()))
-        res.set('X-Powered-By-Redis', false).status(200).json(getData())
-      }
-    })
+    res.status(200).json(getData())
+
+    // redisClient.get(redisKey, (err, data) => {
+    //   err && res.status(500).send(err)
+    //   if (data) {
+    //     res.set('X-Powered-By-Redis', true).status(200).json(JSON.parse(data))
+    //   } else {
+    //     redisClient.setex(redisKey, 60, JSON.stringify(getData()))
+    //     res.set('X-Powered-By-Redis', false).status(200).json(getData())
+    //   }
+    // })
   })
 
   app.get('/v1/daily/raw', cors(corsOptions), (req, res) => {
@@ -282,52 +285,22 @@ module.exports.setup = function (app) {
     res.status(200).json(sourcesArray)
   })
 
-  app.get('/v1/datasources/details', cors(corsOptions), (req, res) => {
-    const sources = []
-    ratingsData.map(data => {
-      sources.push({
-        country: data.country,
-        state: data.state,
-        aggregate: data.aggregate,
-        source: data.url,
-        rating: data.rating,
-        type: data.type
-      })
-    })
-
-    res.status(200).json(sources)
-  })
-
   app.get('/v1/total', cors(corsOptions), (req, res) => {
-    const sources = []
-    let sourcesArray = []
-    const returnArray = []
-    scrapedData.map(data => sources.push({ source: data.url }))
-    sourcesArray = [...new Set(sources.map(x => x.source))]
+    const onlyCounties = scrapedData.filter(l => l.county || l.aggregate === "county")
+    const onlyStates = scrapedData.filter(l => l.state && !l.county)
+    const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county)
+    const total = {
+      cases: 0,
+      active: 0,
+      deaths: 0,
+      recovered: 0,
+      countries: []
+    }
 
-    sourcesArray.forEach(source => {
-      const sourceHit = scrapedData.filter(data => data.url === source)
-      let countySum = 0
-      let citySum = 0
-      let stateSum = 0
-      let countrySum = 0
-      sourceHit.forEach(hit => {
-        if (hit.city) {
-          citySum = citySum + hit.cases
-        } else if (hit.county) {
-          countySum = countySum + hit.cases
-        } else if (hit.state) {
-          stateSum = stateSum + hit.cases
-        } else if (hit.country) {
-          countrySum = countrySum + hit.cases
-        }
-      })
+    reduceData(onlyCounties, total)
+    reduceData(onlyStates, total)
+    reduceData(onlyCountries, total)
 
-      const sumArray = { citySum, countySum, stateSum, countrySum }
-      const sum = citySum + countySum + stateSum + countrySum
-      returnArray.push({ source: source, sum: sum, sumArray })
-    })
-
-    res.status(200).json(returnArray)
+    res.status(200).json(total)
   })
 }
