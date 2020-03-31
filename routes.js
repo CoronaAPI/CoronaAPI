@@ -299,35 +299,26 @@ module.exports.setup = function (app) {
   })
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
-    const sources = []
-    let sourcesArray = []
-    const returnArray = []
-    scrapedData.map(data => sources.push({ source: data.url }))
-    sourcesArray = [...new Set(sources.map(x => x.source))]
-
-    sourcesArray.forEach(source => {
-      const sourceHit = scrapedData.filter(data => data.url === source)
-      let countySum = 0
-      let citySum = 0
-      let stateSum = 0
-      let countrySum = 0
-      sourceHit.forEach(hit => {
-        if (hit.city) {
-          citySum = citySum + hit.cases
-        } else if (hit.county) {
-          countySum = countySum + hit.cases
-        } else if (hit.state) {
-          stateSum = stateSum + hit.cases
-        } else if (hit.country) {
-          countrySum = countrySum + hit.cases
+    const total = scrapedData.reduce(
+      (result, current) => {
+        if (current.aggregate === "country") {
+          return {
+            cases: result.cases + current.cases,
+            active: current.active ? result.active + current.active : result.active + 0,
+            deaths: current.deaths ? result.deaths + current.deaths : result.deaths + 0,
+            recovered: current.recovered ? result.recovered + current.recovered : result.recovered + 0
+          }
         }
-      })
+        return result
+      },
+      {
+        cases: 0,
+        active: 0,
+        deaths: 0,
+        recovered: 0
+      }
+    )
 
-      const sumArray = { citySum, countySum, stateSum, countrySum }
-      const sum = citySum + countySum + stateSum + countrySum
-      returnArray.push({ source: source, sum: sum, sumArray })
-    })
-
-    res.status(200).json(returnArray)
+    res.status(200).json(total)
   })
 }
