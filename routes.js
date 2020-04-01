@@ -42,8 +42,8 @@ module.exports.setup = function (app) {
   let dataFile = ''
   let reportFile = ''
   if (process.env.NODE_ENV === 'dev') {
-    dataFile = path.join(__dirname, `/data/${dateToday}/data.json`)
-    reportFile = path.join(__dirname, `/data/${dateToday}/report.json`)
+    dataFile = path.join(__dirname, '/data/sampledata/data.json')
+    reportFile = path.join(__dirname, '/data/sampledata/report.json')
   } else {
     dataFile = path.join(__dirname, `/../data/${dateToday}/data.json`)
     reportFile = path.join(__dirname, `/../data/${dateToday}/report.json`)
