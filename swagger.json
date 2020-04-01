@@ -31,6 +31,10 @@
         "description": "Find out more",
         "url": "https://corona-api.org"
       }
+    },
+    {
+      "name": "Total",
+      "description": "Aggregated data to get total numbers"
     }
   ],
   "schemes": [
@@ -429,18 +433,15 @@
     "/total": {
       "get": {
         "tags": [
-          "Meta"
+          "Total"
         ],
-        "description": "Total world figures, split on datasource",
+        "description": "Total world figures",
         "responses": {
           "200": {
-            "description": "Array of datasources, and world sums for each.",
+            "description": "Object of total numbers (cases, active, recovered, deaths)",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/Datasources"
-              }
+              "type": "object",
+              "$ref": "#/definitions/TotalNumbers"
             }
           }
         }
@@ -660,6 +661,49 @@
       "type": "string",
       "example": "https://github.com/CSSEGISandData/COVID-19",
       "description": "Source location of a datasource."
+    },
+    "TotalNumbers": {
+      "required": [
+        "cases",
+        "active",
+        "recovered",
+        "deaths",
+        "countries"
+      ],
+      "properties": {
+        "cases": {
+          "type": "integer",
+          "example": 925873,
+          "description": "Total number of all confirmed cases worldwide"
+        },
+        "active": {
+          "type": "integer",
+          "example": 166571,
+          "description": "Total number of all active cases worldwide"
+        },
+        "deaths": {
+          "type": "integer",
+          "example": 37877,
+          "description": "Total number of all deaths worldwide"
+        },
+        "recovered": {
+          "type": "integer",
+          "example": 49146,
+          "description": "Total number of recovered cases worldwide"
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "example": [
+            "USA",
+            "DEU"
+          ],
+          "description": "List of all countries from which the data are aggregated (3-digit ISO Country Code)"
+        }
+      }
     },
     "DatasourcesDetails": {
       "required": [
