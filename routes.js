@@ -248,7 +248,7 @@ module.exports.setup = function (app) {
   })
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
-    const onlyCounties = scrapedData.filter(l => (l.county || l.aggregate === 'county') && !l.city)
+    const onlyCounties = scrapedData.filter(l => l.county  && !l.city)
     const onlyStates = scrapedData.filter(l => l.state && !l.county)
     const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county)
     const total = {
