@@ -249,18 +249,19 @@ module.exports.setup = function (app) {
 
   app.get('/v1/total', cors(corsOptions), (req, res) => {
     const onlyCounties = scrapedData.filter(l => l.county  && !l.city)
-    const onlyStates = scrapedData.filter(l => l.state && !l.county)
-    const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county)
+    const onlyStates = scrapedData.filter(l => l.state && !l.county && !l.city)
+    const onlyCountries = scrapedData.filter(l => l.country && !l.state && !l.county && !l.city)
     const total = {
       cases: 0,
       active: 0,
       deaths: 0,
       recovered: 0,
+      tested: 0,
       countries: []
     }
 
-    reduceData(onlyCounties, total)
-    reduceData(onlyStates, total)
+    reduceData(onlyCounties, total, onlyCountries)
+    reduceData(onlyStates, total, onlyCountries)
     reduceData(onlyCountries, total)
 
     res.status(200).json(total)

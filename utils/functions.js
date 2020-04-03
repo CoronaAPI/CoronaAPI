@@ -1,8 +1,8 @@
-const fs = require('fs')
+const fs = require("fs")
 
 const readJsonFileSync = (filepath, encoding) => {
-  if (typeof (encoding) === 'undefined') {
-    encoding = 'utf8'
+  if (typeof encoding === "undefined") {
+    encoding = "utf8"
   }
 
   try {
@@ -14,7 +14,7 @@ const readJsonFileSync = (filepath, encoding) => {
   }
 }
 
-const casesMap = (coronaData) => {
+const casesMap = coronaData => {
   return {
     cases: coronaData.cases,
     country: coronaData.country,
@@ -22,7 +22,7 @@ const casesMap = (coronaData) => {
   }
 }
 
-const recoveredMap = (coronaData) => {
+const recoveredMap = coronaData => {
   return {
     recovered: coronaData.recovered,
     country: coronaData.country,
@@ -30,7 +30,7 @@ const recoveredMap = (coronaData) => {
   }
 }
 
-const deathMap = (coronaData) => {
+const deathMap = coronaData => {
   return {
     deaths: coronaData.deaths,
     country: coronaData.country,
@@ -38,7 +38,7 @@ const deathMap = (coronaData) => {
   }
 }
 
-const coronaDataMapper = (coronaData) => {
+const coronaDataMapper = coronaData => {
   return {
     cases: coronaData.cases,
     country: coronaData.country,
@@ -56,7 +56,7 @@ const coronaDataMapper = (coronaData) => {
   }
 }
 
-const ratingFilter = (minRating) => {
+const ratingFilter = minRating => {
   if (minRating === undefined) {
     return _ => true
   }
@@ -64,7 +64,7 @@ const ratingFilter = (minRating) => {
   return coronaData => coronaData.rating >= minRating
 }
 
-const countryFilter = (allowedCountry) => {
+const countryFilter = allowedCountry => {
   if (allowedCountry === undefined) {
     return _ => true
   }
@@ -72,7 +72,7 @@ const countryFilter = (allowedCountry) => {
   return coronaData => coronaData.country === allowedCountry.toUpperCase()
 }
 
-const stateFilter = (state) => {
+const stateFilter = state => {
   if (state === undefined) {
     return _ => true
   }
@@ -80,7 +80,7 @@ const stateFilter = (state) => {
   return coronaData => coronaData.state === state
 }
 
-const countyFilter = (county) => {
+const countyFilter = county => {
   if (county === undefined) {
     return _ => true
   }
@@ -88,7 +88,7 @@ const countyFilter = (county) => {
   return coronaData => coronaData.county === county
 }
 
-const cityFilter = (city) => {
+const cityFilter = city => {
   if (city === undefined) {
     return _ => true
   }
@@ -96,7 +96,7 @@ const cityFilter = (city) => {
   return coronaData => coronaData.city === city
 }
 
-const sourceFilter = (source) => {
+const sourceFilter = source => {
   if (source === undefined) {
     return _ => true
   }
@@ -106,7 +106,7 @@ const sourceFilter = (source) => {
 
 const countryDatasourceReducer = (intermediateResult, coronaData) => {
   const { country, url, ...otherCoronaData } = coronaData
-  const getOrZero = number => number === undefined ? 0 : number
+  const getOrZero = number => (number === undefined ? 0 : number)
 
   const newResult = intermediateResult
 
@@ -129,26 +129,45 @@ const countryDatasourceReducer = (intermediateResult, coronaData) => {
 
   const intermediateForCountryAndDatasource = newResult[country][url]
   intermediateForCountryAndDatasource.cases += getOrZero(otherCoronaData.cases)
-  intermediateForCountryAndDatasource.active += getOrZero(otherCoronaData.active)
-  intermediateForCountryAndDatasource.recovered += getOrZero(otherCoronaData.recovered)
-  intermediateForCountryAndDatasource.deaths += getOrZero(otherCoronaData.deaths)
-  intermediateForCountryAndDatasource.population += getOrZero(otherCoronaData.population)
+  intermediateForCountryAndDatasource.active += getOrZero(
+    otherCoronaData.active
+  )
+  intermediateForCountryAndDatasource.recovered += getOrZero(
+    otherCoronaData.recovered
+  )
+  intermediateForCountryAndDatasource.deaths += getOrZero(
+    otherCoronaData.deaths
+  )
+  intermediateForCountryAndDatasource.population += getOrZero(
+    otherCoronaData.population
+  )
   newResult[country][url] = intermediateForCountryAndDatasource
 
   return newResult
 }
 
-const reduceData = (data, reduced) => {
+const reduceData = (data, reduced, countries = []) => {
   return data.forEach(d => {
     if (!reduced.countries.includes(d.country)) {
       const totalOfCountry = data.reduce(
         (result, current) => {
           if (d.country === current.country) {
             return {
-              cases: current.cases ? result.cases + current.cases : result.cases + 0,
-              active: current.active ? result.active + current.active : result.active + 0,
-              deaths: current.deaths ? result.deaths + current.deaths : result.deaths + 0,
-              recovered: current.recovered ? result.recovered + current.recovered : result.recovered + 0
+              cases: current.cases
+                ? result.cases + current.cases
+                : result.cases + 0,
+              active: current.active
+                ? result.active + current.active
+                : result.active + 0,
+              deaths: current.deaths
+                ? result.deaths + current.deaths
+                : result.deaths + 0,
+              recovered: current.recovered
+                ? result.recovered + current.recovered
+                : result.recovered + 0,
+              tested: current.tested
+                ? result.tested + current.tested
+                : result.tested + 0
             }
           }
           return result
@@ -158,13 +177,39 @@ const reduceData = (data, reduced) => {
           active: 0,
           deaths: 0,
           recovered: 0,
+          tested: 0
         }
       )
 
-      reduced.cases = reduced.cases + totalOfCountry.cases
-      reduced.active = reduced.active + totalOfCountry.active
-      reduced.recovered = reduced.recovered + totalOfCountry.recovered
-      reduced.deaths = reduced.deaths + totalOfCountry.deaths
+      const country = countries.find(
+        c => c.country === d.country && c.cases > totalOfCountry.cases
+      )
+
+      if (country) {
+        reduced.cases = reduced.cases + country.cases
+        reduced.active =
+          !country.active || country.active < totalOfCountry.active
+            ? reduced.active + totalOfCountry.active
+            : reduced.active + country.active
+        reduced.recovered =
+          !country.recovered || country.recovered < totalOfCountry.recovered
+            ? reduced.recovered + totalOfCountry.recovered
+            : reduced.recovered + country.recovered
+        reduced.deaths =
+          !country.deaths || country.deaths < totalOfCountry.deaths
+            ? reduced.deaths + totalOfCountry.deaths
+            : reduced.deaths + country.deaths
+        reduced.tested =
+            !country.tested || country.tested < totalOfCountry.tested
+              ? reduced.tested + totalOfCountry.tested
+              : reduced.tested + country.tested
+      } else {
+        reduced.cases = reduced.cases + totalOfCountry.cases
+        reduced.active = reduced.active + totalOfCountry.active
+        reduced.recovered = reduced.recovered + totalOfCountry.recovered
+        reduced.deaths = reduced.deaths + totalOfCountry.deaths
+        reduced.tested = reduced.tested + totalOfCountry.tested
+      }
       reduced.countries.push(d.country)
     }
   })
