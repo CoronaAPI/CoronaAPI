@@ -2,7 +2,7 @@
 
 ##################
 # VARIABLES
-###################
+##################
 
 TIME=$(date "+%Y-%m-%d %H:%M")
 DATE=$(date +%Y-%m-%d)
@@ -20,7 +20,7 @@ cleanAndCopy () {
 
 ##################
 # SETUP
-###################
+##################
 
 echo "[*] Starting Daily Data Dump " $TIME
 
@@ -40,7 +40,7 @@ fi
 
 ##################
 # WORK
-###################
+##################
 
 cd $DIR/$DATE/coronadatascraper
 
@@ -55,32 +55,11 @@ cleanAndCopy "data.json"
 cleanAndCopy "ratings.json"
 cleanAndCopy "report.json"
 
-# if [ -e "$DIR/$DATE/data.json" ]
-# then
-  # mv $DIR/$DATE/data.json{,.$(date +%Y%m%d-%H%M)}
-# fi
-
-# cp $DIR/$DATE/coronadatascraper/dist/data.json $DIR/$DATE
-
-# if [ -e "$DIR/$DATE/ratings.json" ]
-# then
-  # rm $DIR/$DATE/ratings.json
-# fi
-
-# cp $DIR/$DATE/coronadatascraper/dist/ratings.json $DIR/$DATE
-
-# if [ -e "$DIR/$DATE/report.json" ]
-# then
-  # rm $DIR/$DATE/report.json
-# fi
-
-# cp $DIR/$DATE/coronadatascraper/dist/report.json $DIR/$DATE
-
 echo "[*] Data successfully dumped " + $TIME
 
 ##################
 # CLEAN-UP
-###################
+##################
 
 echo ""
 echo "[*] Cleaning up data scrape"
