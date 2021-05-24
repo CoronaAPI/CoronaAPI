@@ -13,8 +13,6 @@
 
 HTTP Corona API based on the great work of [@lazd/coronadatascraper](https://github.com/lazd/coronadatascraper).
 
-#### 💌 Join our [Slack](https://join.slack.com/t/corona-api/shared_invite/zt-d3q97q52-2~0Jh7YV1WHVDY~TpENVtg)
-
 ## 🏗️ Usage
 
 1. `git clone https://github.com/CoronaAPI/CoronaAPI`
@@ -30,10 +28,6 @@ The API will then be listening on `localhost:3001`
 ## ⚙️ Implementations
 
 - R Library [paulvern/covid19]( https://github.com/paulvern/covid19/tree/master/readcorona )
-
-## 👀 Status
-
-- [Hyperping](https://status.corona-api.org)
 
 ## 🙏 Contributors
 
